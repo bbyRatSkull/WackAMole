@@ -16,7 +16,7 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-
+print("hello how does git work?")
 
 # Mole class
 class Mole(Sprite):
