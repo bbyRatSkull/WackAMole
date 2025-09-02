@@ -1,3 +1,4 @@
+# Started on AUG 2025
 # STARTER
 from pygame import *
 from pygame.font import Font
