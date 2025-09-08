@@ -35,12 +35,13 @@ red = (255,0,0)
 
 # set up the display
 pygame.init()
-# a list in the format [(x,y)]
-ratio_sizes = [(1024, 576),(1280,720),(1504,846),(1920,1080)]
+
 screenvar = pygame.display.get_desktop_sizes()
+
 # for some reason this needs to be called here or the screen doesnt resize properly
 screen = pygame.display.set_mode((screenvar[0][0], screenvar[0][1]), FULLSCREEN)
 # this suto sets the game window to be the closest resolution
+ratio_sizes = [(1024, 576),(1280,720),(1504,846),(1920,1080)]
 for item in ratio_sizes:
     if screenvar[0][0] >= item[0] and screenvar[0][1] >= item[1]:
         GAME_SIZE = item
@@ -48,8 +49,7 @@ for item in ratio_sizes:
 GEN_COORDS = [((screenvar[0][0]-GAME_SIZE[0])/2), ((screenvar[0][1]-GAME_SIZE[1])/2)]
 
 #screen = pygame.display.set_mode(GAME_SIZE, FULLSCREEN) may not need this
-# loads in image and scales it to screen size
-BG = transform.scale(pygame.image.load("BG_Menu.PNG").convert(),GAME_SIZE)
+
 pygame.display.set_caption("Whack a Mole!")
 
 MOLE = transform.scale(pygame.image.load("Sprites/temp_hole.PNG").convert_alpha(),(72,72))
@@ -62,6 +62,8 @@ headerfont.set_bold(True)
 def main_menu(): #the main menu screen
     while True:
         screen.fill(black)
+        # loads in image and scales it to screen size
+        BG = transform.scale(pygame.image.load("BG_Menu.PNG").convert(),GAME_SIZE)
         screen.blit(BG, (GEN_COORDS[0], GEN_COORDS[1])) 
         #BG.get_rect(center = screen.get_rect().center) insted of coords works to center window
 
@@ -80,8 +82,11 @@ def main_menu(): #the main menu screen
         quit_button = Button(None, pos=(1059, 576), 
                              base_screen_info=(1280, 720), game_size=GAME_SIZE, gen_coords=GEN_COORDS,
                              text_input="Quit", font=buttonfont, base_color=darkbrown, hovering_color=pink)
+        settings_button = Button(transform.scale(pygame.image.load("Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1100, 10),
+                                 base_screen_info=(1280, 720), game_size=GAME_SIZE, gen_coords=GEN_COORDS,
+                                 text_input="", font=buttonfont, base_color=white, hovering_color=white)
 
-        for button in [play_button, quit_button]:
+        for button in [play_button, quit_button, settings_button]:
             button.changeColor(mousePos)
             button.update(screen)
 
@@ -196,7 +201,10 @@ def tutorial():
 
 def play():
     while True:
-        screen.fill(white)
+        screen.fill(black)
+        # loads in image and scales it to screen size
+        BG = transform.scale(pygame.image.load("BG_Play.PNG").convert(),GAME_SIZE)
+        screen.blit(BG, (GEN_COORDS[0], GEN_COORDS[1]))
 
         mousePos = pygame.mouse.get_pos()
         mousex = mousePos[0]
