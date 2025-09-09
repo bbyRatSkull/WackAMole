@@ -1,19 +1,13 @@
 class Button():
 	# altered to make buttons move, added 3 more info passes after "pos"
-	def __init__(self, image, pos, base_screen_info, game_size, gen_coords, text_input, font, base_color, hovering_color):
+	def __init__(self, image, pos, text_input, font, base_color, hovering_color):
+		self.x_pos = pos[0]
+		self.y_pos = pos[1]
 		self.image = image
 		self.font = font
 		self.base_color, self.hovering_color = base_color, hovering_color
 		self.text_input = text_input
 		self.text = self.font.render(self.text_input, True, self.base_color)
-
-		#stuff to auto place button based off game/window size \/
-		x_percent      = pos[0] / base_screen_info[0]
-		y_percent      = pos[1] / base_screen_info[1]
-
-		self.x_pos = (x_percent * game_size[0]) + gen_coords[0]
-		self.y_pos = (y_percent * game_size[1]) + gen_coords[1]
-		#end of changes /\
 
 		if self.image is None:
 			self.image = self.text

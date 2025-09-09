@@ -1,5 +1,5 @@
 # Started on AUG 2025
-# STARTER
+import random
 from pygame import *
 from pygame.font import Font
 from pygame.sprite import *
@@ -16,13 +16,54 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
+pygame.init()
+screenvar = pygame.display.get_desktop_sizes()
+screen = pygame.display.set_mode((screenvar[0][0], screenvar[0][1]), FULLSCREEN)
+#the screen ratio all object are placed to match
+GAME_SIZE = (1504,846)
+
+moleabsent = transform.scale(image.load(resource_path("Sprites/hole_mound.PNG")).convert_alpha(), (225.6,225.6) )
+molestage1 = transform.scale(image.load(resource_path("Sprites/mole_stage1.PNG")).convert_alpha(), (225.6,225.6))
+molestage2 = transform.scale(image.load(resource_path("Sprites/mole_stage2.PNG")).convert_alpha(), (225.6,225.6))
+molealive_s = transform.scale(image.load(resource_path("Sprites/mole_sb.PNG")).convert_alpha(), (225.6,225.6))
+molealive_b = transform.scale(image.load(resource_path("Sprites/mole_bb.PNG")).convert_alpha(), (225.6,225.6))
+moledead = transform.scale(image.load(resource_path("Sprites/red_splat.PNG")).convert_alpha(), (225.6,225.6))
+
 # Mole class
 class Mole(Sprite):
     def __init__(self, x, y):
         Sprite.__init__(self)
-        self.image = MOLE
-        #self.image = image.load(resource_path("molehole.png")).convert()
+        self.image = moleabsent
         self.rect = self.image.get_rect().move(x,y)
+        self.status = 'absent'
+
+
+# for timing
+framerate = 1000  # you can modify to adjust speed of animation, 1 second = 1000 milliseconds
+TIMEREVENT = pygame.USEREVENT + 1
+pygame.time.set_timer(TIMEREVENT, framerate)
+
+# create our moles
+moles = [None for _ in range(9)]
+moles[0] = Mole(80, 328) #top 1
+moles[1] = Mole(216, 544) #bottom 1
+moles[2] = Mole(494, 478) #bottom 2
+moles[3] = Mole(348, 257) #top 2
+moles[4] = Mole(643, 238) #top 3
+moles[5] = Mole(939, 257) #top 4
+moles[6] = Mole(794, 478) #bottom 3
+moles[7] = Mole(1070, 544) #bottom 4
+moles[8] = Mole(1207, 328) #top 5
+
+
+#for i in range(2):
+ #   for j in range(5):
+  #      moles[i][j] = Mole(x,y)
+   #     x += (1280/5)/2
+    #x = 1280/5
+    #y += 100
+
+allmoles = Group(moles)
 
 # Colors we want to use
 darkbrown = (60,40,37)
@@ -33,57 +74,41 @@ lightblue = (30,144,255)
 darkblue = (0,0,139)
 red = (255,0,0)
 
-# set up the display
-pygame.init()
-
-screenvar = pygame.display.get_desktop_sizes()
-
-# for some reason this needs to be called here or the screen doesnt resize properly
-screen = pygame.display.set_mode((screenvar[0][0], screenvar[0][1]), FULLSCREEN)
-# this suto sets the game window to be the closest resolution
-ratio_sizes = [(1024, 576),(1280,720),(1504,846),(1920,1080)]
-for item in ratio_sizes:
-    if screenvar[0][0] >= item[0] and screenvar[0][1] >= item[1]:
-        GAME_SIZE = item
-#the coordinates for window generation
-GEN_COORDS = [((screenvar[0][0]-GAME_SIZE[0])/2), ((screenvar[0][1]-GAME_SIZE[1])/2)]
-
-#screen = pygame.display.set_mode(GAME_SIZE, FULLSCREEN) may not need this
-
 pygame.display.set_caption("Whack a Mole!")
 
-MOLE = transform.scale(pygame.image.load("Sprites/temp_hole.PNG").convert_alpha(),(72,72))
+animation_list_mole = [moleabsent, molestage1, molestage2, molealive_s]
+last_update = pygame.time.get_ticks()
+animation_cooldown = 500
+frame = 0
+
+current_time = pygame.time.get_ticks()
+if current_time - last_update >= animation_cooldown:
+    frame += 1
+    last_update = current_time
+    screen.blit(animation_list_mole[frame])
 
 # create some fonts
 headerfont = pygame.font.SysFont('helveticaneue', 48)
 buttonfont = pygame.font.SysFont('helveticaneue',30)
 headerfont.set_bold(True)
 
+gameStarted = False
+
 def main_menu(): #the main menu screen
     while True:
         screen.fill(black)
         # loads in image and scales it to screen size
         BG = transform.scale(pygame.image.load("BG_Menu.PNG").convert(),GAME_SIZE)
-        screen.blit(BG, (GEN_COORDS[0], GEN_COORDS[1])) 
-        #BG.get_rect(center = screen.get_rect().center) insted of coords works to center window
+        screen.blit(BG, BG.get_rect(center = screen.get_rect().center)) 
+        
 
         mousePos = pygame.mouse.get_pos()
-        mousex = mousePos[0]
-        mousey = mousePos[1]
 
-        #menu_text = buttonfont.render("Wack a Mole", True, black)
-        #menu_rect = menu_text.get_rect(center=(640, 100))
-
-        #screen.blit(menu_text, menu_rect)
-
-        play_button = Button(None, pos=(364,463), 
-                             base_screen_info=(1280, 720), game_size=GAME_SIZE, gen_coords=GEN_COORDS,
+        play_button = Button(None, pos=(431.7,612.025), 
                              text_input="Play", font=buttonfont, base_color=darkbrown, hovering_color=pink)
-        quit_button = Button(None, pos=(1059, 576), 
-                             base_screen_info=(1280, 720), game_size=GAME_SIZE, gen_coords=GEN_COORDS,
+        quit_button = Button(None, pos=(1248.325, 744.8), 
                              text_input="Quit", font=buttonfont, base_color=darkbrown, hovering_color=pink)
-        settings_button = Button(transform.scale(pygame.image.load("Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1100, 10),
-                                 base_screen_info=(1280, 720), game_size=GAME_SIZE, gen_coords=GEN_COORDS,
+        settings_button = Button(transform.scale(pygame.image.load("Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
                                  text_input="", font=buttonfont, base_color=white, hovering_color=white)
 
         for button in [play_button, quit_button, settings_button]:
@@ -122,17 +147,13 @@ def shop():
         screen.blit(shop_text, shop_rect)
 
         back_button = Button(None, pos=(1000, 600),
-                                base_screen_info=(1280, 720), game_size=GAME_SIZE, gen_coords=GEN_COORDS,
                                 text_input="Back", font=buttonfont, base_color=black, hovering_color=red)
         
         snow_power = Button(transform.scale(pygame.image.load("Sprites/snow.PNG").convert_alpha(),(72,72)), pos=(100, 600), 
-                                base_screen_info=(1280, 720), game_size=GAME_SIZE, gen_coords=GEN_COORDS,
                                 text_input=None, font=buttonfont, base_color=black, hovering_color=red)
         double_power = Button(transform.scale(pygame.image.load("Sprites/double.PNG").convert_alpha(),(72,72)), pos=(150, 600), 
-                                base_screen_info=(1280, 720), game_size=GAME_SIZE, gen_coords=GEN_COORDS,
                                 text_input=None, font=buttonfont, base_color=black, hovering_color=red)
         placeholder_power = Button(None, pos=(250, 600), 
-                                base_screen_info=(1280, 720), game_size=GAME_SIZE, gen_coords=GEN_COORDS,
                                 text_input="Placeholder", font=buttonfont, base_color=black, hovering_color=red)
 
         for button in [back_button, snow_power, double_power, placeholder_power]:
@@ -174,10 +195,8 @@ def tutorial():
         mousey = mousePos[1]
 
         menu_button = Button(None, pos=(1000, 650), 
-                             base_screen_info=(1280, 720), game_size=GAME_SIZE, gen_coords=GEN_COORDS,
                              text_input="Main Menu", font=buttonfont, base_color=black, hovering_color=red)
         skip_tutorial_button = Button(None, pos=(100, 650), 
-                             base_screen_info=(1280, 720), game_size=GAME_SIZE, gen_coords=GEN_COORDS,
                              text_input="Skip Tutorial", font=buttonfont, base_color=black, hovering_color=red)
         
         for button in [menu_button, skip_tutorial_button]:
@@ -204,20 +223,22 @@ def play():
         screen.fill(black)
         # loads in image and scales it to screen size
         BG = transform.scale(pygame.image.load("BG_Play.PNG").convert(),GAME_SIZE)
-        screen.blit(BG, (GEN_COORDS[0], GEN_COORDS[1]))
+        screen.blit(BG, BG.get_rect(center = screen.get_rect().center))
+        jar = transform.scale(pygame.image.load("Sprites/jar_empty.PNG").convert_alpha(),(150,150))
+        screen.blit(jar, (1350, 740))
 
         mousePos = pygame.mouse.get_pos()
-        mousex = mousePos[0]
-        mousey = mousePos[1]
+
+        gameStarted = True
+
+        global moles
+        allmoles.draw(screen)
 
         menu_button = Button(None, pos=(1000, 650), 
-                             base_screen_info=(1280, 720), game_size=GAME_SIZE, gen_coords=GEN_COORDS,
                              text_input="Main Menu", font=buttonfont, base_color=black, hovering_color=red)
         shop_button = Button(None, pos=(400, 650), 
-                             base_screen_info=(1280, 720), game_size=GAME_SIZE, gen_coords=GEN_COORDS,
                              text_input="Shop", font=buttonfont, base_color=black, hovering_color=red)
         next_round_button = Button(None, pos=(700, 650), 
-                             base_screen_info=(1280, 720), game_size=GAME_SIZE, gen_coords=GEN_COORDS,
                              text_input="Next Round", font=buttonfont, base_color=black, hovering_color=red)
 
         for button in [menu_button, shop_button, next_round_button]:
@@ -238,20 +259,27 @@ def play():
                     play()
                 if shop_button.checkForInput(mousePos):
                     shop()
-
-        # create our moles
-        moles = [[None for _ in range(5)] for _ in range(5)]
-        x = 1280/5
-        y = 100
-        for i in range(5):
-            for j in range(5):
-                moles[i][j] = Mole(x,y)
-                x += (1280/5)/2
-            x = 1280/5
-            y += 100
-
-        allmoles = Group(moles)
-        allmoles.draw(screen)
+            if event.type == TIMEREVENT:
+            # this means our timer went off!
+            # randomly set moles to be up or down
+                if gameStarted:
+                    for i in range(9):
+                            # if mole was absent, randomly makeit alive
+                            aliveodds = 20
+                            absentodds = 3
+                            if moles[i].status == 'absent':
+                                r = random.randint(1,aliveodds)
+                                if r == 1:
+                                    moles[i].status = 'alive'
+                                    if random.randint(0,1) == 0:
+                                        moles[i].image = molealive_s
+                                    else: moles[i].image = molealive_b
+                            # if alive, randomly make it absent
+                            elif moles[i].status == 'alive':
+                                r = random.randint(1, absentodds)
+                                if r == 1:
+                                    moles[i].status = 'absent'
+                                    moles[i].image = moleabsent
 
         pygame.display.update()
 
