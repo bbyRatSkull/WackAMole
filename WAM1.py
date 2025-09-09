@@ -28,6 +28,7 @@ molestage2 = transform.scale(image.load(resource_path("Sprites/mole_stage2.PNG")
 molealive_s = transform.scale(image.load(resource_path("Sprites/mole_sb.PNG")).convert_alpha(), (225.6,225.6))
 molealive_b = transform.scale(image.load(resource_path("Sprites/mole_bb.PNG")).convert_alpha(), (225.6,225.6))
 moledead = transform.scale(image.load(resource_path("Sprites/red_splat.PNG")).convert_alpha(), (225.6,225.6))
+rabbitalive= transform.scale(image.load(resource_path("Sprites/snowdrop.PNG")).convert_alpha(), (225.6,225.6))
 
 # Mole class
 class Mole(Sprite):
@@ -76,6 +77,7 @@ red = (255,0,0)
 
 pygame.display.set_caption("Whack a Mole!")
 
+#this does not work and I may murder
 animation_list_mole = [moleabsent, molestage1, molestage2, molealive_s]
 last_update = pygame.time.get_ticks()
 animation_cooldown = 500
@@ -86,6 +88,8 @@ if current_time - last_update >= animation_cooldown:
     frame += 1
     last_update = current_time
     screen.blit(animation_list_mole[frame])
+# the above does not work and murder is feasable 
+
 
 # create some fonts
 headerfont = pygame.font.SysFont('helveticaneue', 48)
@@ -93,6 +97,9 @@ buttonfont = pygame.font.SysFont('helveticaneue',30)
 headerfont.set_bold(True)
 
 gameStarted = False
+
+myimage = transform.scale(pygame.image.load("Sprites/red_splat.PNG").convert_alpha(),(50,50))
+imagerect = myimage.get_rect()
 
 def main_menu(): #the main menu screen
     while True:
@@ -126,11 +133,47 @@ def main_menu(): #the main menu screen
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button.checkForInput(mousePos):
                     tutorial()
-                #if shop_button.checkForInput(mousePos):
-                    #shop()
+                if settings_button.checkForInput(mousePos):
+                    settings()
                 if quit_button.checkForInput(mousePos):
                     pygame.quit()
                     sys.exit()
+
+        pygame.display.update()  
+
+def settings():
+    while True: 
+        #AHHHHHH
+        mousePos = pygame.mouse.get_pos()
+
+        #trying to get an image to appear behind the buttons
+        #screen.blit(myimage, (1458, 118))
+
+        vol_button = Button(transform.scale(pygame.image.load("Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
+                                 text_input="Volume", font=buttonfont, base_color=white, hovering_color=white)
+        music_button = Button(transform.scale(pygame.image.load("Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 178),
+                                 text_input="Music", font=buttonfont, base_color=white, hovering_color=white)
+        exit_button = Button(transform.scale(pygame.image.load("Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 238),
+                                 text_input="Close Menu", font=buttonfont, base_color=white, hovering_color=white)
+        
+        for button in [vol_button, music_button, exit_button]:
+            button.changeColor(mousePos)
+            button.update(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == K_ESCAPE:
+                    return
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if vol_button.checkForInput(mousePos):
+                    volume = 0
+                if music_button.checkForInput(mousePos):
+                    music = 0
+                if exit_button.checkForInput(mousePos):
+                    return
 
         pygame.display.update()  
 
@@ -231,7 +274,6 @@ def play():
 
         gameStarted = True
 
-        global moles
         allmoles.draw(screen)
 
         menu_button = Button(None, pos=(1000, 650), 
@@ -240,8 +282,10 @@ def play():
                              text_input="Shop", font=buttonfont, base_color=black, hovering_color=red)
         next_round_button = Button(None, pos=(700, 650), 
                              text_input="Next Round", font=buttonfont, base_color=black, hovering_color=red)
+        settings_button = Button(transform.scale(pygame.image.load("Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
+                                 text_input="", font=buttonfont, base_color=white, hovering_color=white)
 
-        for button in [menu_button, shop_button, next_round_button]:
+        for button in [menu_button, shop_button, next_round_button, settings_button]:
             button.changeColor(mousePos)
             button.update(screen)
 
@@ -259,19 +303,25 @@ def play():
                     play()
                 if shop_button.checkForInput(mousePos):
                     shop()
+                if settings_button.checkForInput(mousePos):
+                    settings()
             if event.type == TIMEREVENT:
             # this means our timer went off!
             # randomly set moles to be up or down
                 if gameStarted:
                     for i in range(9):
                             # if mole was absent, randomly makeit alive
-                            aliveodds = 20
+                            aliveodds = 10
                             absentodds = 3
+                            rabbitodds = 10
                             if moles[i].status == 'absent':
                                 r = random.randint(1,aliveodds)
                                 if r == 1:
                                     moles[i].status = 'alive'
-                                    if random.randint(0,1) == 0:
+                                    r = random.randint(0,rabbitodds)
+                                    if r == 1:
+                                        moles[i].image = rabbitalive
+                                    elif r%2 == 0:
                                         moles[i].image = molealive_s
                                     else: moles[i].image = molealive_b
                             # if alive, randomly make it absent
