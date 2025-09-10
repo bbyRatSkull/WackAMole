@@ -6,6 +6,7 @@ from pygame.sprite import *
 import pygame, sys, os
 from pygame.locals import *
 from button import Button
+import moviepy.editor
 
 # need for making .exe later
 def resource_path(relative_path):
@@ -100,6 +101,11 @@ gameStarted = False
 
 myimage = transform.scale(pygame.image.load("Sprites/red_splat.PNG").convert_alpha(),(50,50))
 imagerect = myimage.get_rect()
+
+intro = moviepy.editor.VideoFileClip("Intro_video.mov")
+intro_resized = intro.resize(newsize=(1504, 846))
+intro_resized.preview(fullscreen=True)
+
 
 def main_menu(): #the main menu screen
     while True:
