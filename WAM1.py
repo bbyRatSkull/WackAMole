@@ -23,18 +23,20 @@ screen = pygame.display.set_mode((screenvar[0][0], screenvar[0][1]), FULLSCREEN)
 #the screen ratio all object are placed to match
 GAME_SIZE = (1504,846)
 
-moleabsent = transform.scale(image.load(resource_path("Sprites/hole_mound.PNG")).convert_alpha(), (225.6,225.6) )
-molestage1 = transform.scale(image.load(resource_path("Sprites/mole_stage1.PNG")).convert_alpha(), (225.6,225.6))
-molestage2 = transform.scale(image.load(resource_path("Sprites/mole_stage2.PNG")).convert_alpha(), (225.6,225.6))
-molealive_s = transform.scale(image.load(resource_path("Sprites/mole_sb.PNG")).convert_alpha(), (225.6,225.6))
-molealive_b = transform.scale(image.load(resource_path("Sprites/mole_bb.PNG")).convert_alpha(), (225.6,225.6))
-moledead = transform.scale(image.load(resource_path("Sprites/red_splat.PNG")).convert_alpha(), (225.6,225.6))
-rabbitalive= transform.scale(image.load(resource_path("Sprites/snowdrop.PNG")).convert_alpha(), (225.6,225.6))
+moleabsent = transform.scale(image.load(resource_path("Resources/Sprites/hole_mound.PNG")).convert_alpha(), (225.6,225.6) )
+molestage1 = transform.scale(image.load(resource_path("Resources/Sprites/mole_stage1.PNG")).convert_alpha(), (225.6,225.6))
+molestage2 = transform.scale(image.load(resource_path("Resources/Sprites/mole_stage2.PNG")).convert_alpha(), (225.6,225.6))
+molealive_s = transform.scale(image.load(resource_path("Resources/Sprites/mole_sb.PNG")).convert_alpha(), (225.6,225.6))
+molealive_b = transform.scale(image.load(resource_path("Resources/Sprites/mole_bb.PNG")).convert_alpha(), (225.6,225.6))
+moledead = transform.scale(image.load(resource_path("Resources/Sprites/red_splat.PNG")).convert_alpha(), (225.6,225.6))
+rabbitalive= transform.scale(image.load(resource_path("Resources/Sprites/snowdrop.PNG")).convert_alpha(), (225.6,225.6))
 
 # Mole class
 class Mole(Sprite):
     def __init__(self, x, y):
         Sprite.__init__(self)
+        self.x = x
+        self.y = y
         self.image = moleabsent
         self.rect = self.image.get_rect().move(x,y)
         self.status = 'absent'
@@ -99,19 +101,19 @@ headerfont.set_bold(True)
 
 gameStarted = False
 
-myimage = transform.scale(pygame.image.load("Sprites/red_splat.PNG").convert_alpha(),(50,50))
+myimage = transform.scale(pygame.image.load("Resources/Sprites/red_splat.PNG").convert_alpha(),(50,50))
 imagerect = myimage.get_rect()
 
-intro = moviepy.editor.VideoFileClip("Intro_video.mov")
-intro_resized = intro.resize(newsize=(1504, 846))
-intro_resized.preview(fullscreen=True)
-
+def intro_sequence():
+    intro = moviepy.editor.VideoFileClip("Resources/Backgrounds/Intro_video.mov")
+    intro_resized = intro.resize(newsize=(1504, 846))
+    intro_resized.preview(fullscreen=True)
 
 def main_menu(): #the main menu screen
     while True:
         screen.fill(black)
         # loads in image and scales it to screen size
-        BG = transform.scale(pygame.image.load("BG_Menu.PNG").convert(),GAME_SIZE)
+        BG = transform.scale(pygame.image.load("Resources/Backgrounds/BG_Menu.PNG").convert(),GAME_SIZE)
         screen.blit(BG, BG.get_rect(center = screen.get_rect().center)) 
         
 
@@ -121,7 +123,7 @@ def main_menu(): #the main menu screen
                              text_input="Play", font=buttonfont, base_color=darkbrown, hovering_color=pink)
         quit_button = Button(None, pos=(1248.325, 744.8), 
                              text_input="Quit", font=buttonfont, base_color=darkbrown, hovering_color=pink)
-        settings_button = Button(transform.scale(pygame.image.load("Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
+        settings_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
                                  text_input="", font=buttonfont, base_color=white, hovering_color=white)
 
         for button in [play_button, quit_button, settings_button]:
@@ -155,11 +157,11 @@ def settings():
         #trying to get an image to appear behind the buttons
         #screen.blit(myimage, (1458, 118))
 
-        vol_button = Button(transform.scale(pygame.image.load("Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
+        vol_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
                                  text_input="Volume", font=buttonfont, base_color=white, hovering_color=white)
-        music_button = Button(transform.scale(pygame.image.load("Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 178),
+        music_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 178),
                                  text_input="Music", font=buttonfont, base_color=white, hovering_color=white)
-        exit_button = Button(transform.scale(pygame.image.load("Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 238),
+        exit_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 238),
                                  text_input="Close Menu", font=buttonfont, base_color=white, hovering_color=white)
         
         for button in [vol_button, music_button, exit_button]:
@@ -198,9 +200,9 @@ def shop():
         back_button = Button(None, pos=(1000, 600),
                                 text_input="Back", font=buttonfont, base_color=black, hovering_color=red)
         
-        snow_power = Button(transform.scale(pygame.image.load("Sprites/snow.PNG").convert_alpha(),(72,72)), pos=(100, 600), 
+        snow_power = Button(transform.scale(pygame.image.load("Resources/Sprites/snow.PNG").convert_alpha(),(72,72)), pos=(100, 600), 
                                 text_input=None, font=buttonfont, base_color=black, hovering_color=red)
-        double_power = Button(transform.scale(pygame.image.load("Sprites/double.PNG").convert_alpha(),(72,72)), pos=(150, 600), 
+        double_power = Button(transform.scale(pygame.image.load("Resources/Sprites/double.PNG").convert_alpha(),(72,72)), pos=(150, 600), 
                                 text_input=None, font=buttonfont, base_color=black, hovering_color=red)
         placeholder_power = Button(None, pos=(250, 600), 
                                 text_input="Placeholder", font=buttonfont, base_color=black, hovering_color=red)
@@ -271,12 +273,14 @@ def play():
     while True:
         screen.fill(black)
         # loads in image and scales it to screen size
-        BG = transform.scale(pygame.image.load("BG_Play.PNG").convert(),GAME_SIZE)
+        BG = transform.scale(pygame.image.load("Resources/Backgrounds/BG_Play.PNG").convert(),GAME_SIZE)
         screen.blit(BG, BG.get_rect(center = screen.get_rect().center))
-        jar = transform.scale(pygame.image.load("Sprites/jar_empty.PNG").convert_alpha(),(150,150))
+        jar = transform.scale(pygame.image.load("Resources/Sprites/jar_empty.PNG").convert_alpha(),(150,150))
         screen.blit(jar, (1350, 740))
 
         mousePos = pygame.mouse.get_pos()
+        mousex = mousePos[0]
+        mousey = mousePos[1]
 
         gameStarted = True
 
@@ -288,7 +292,7 @@ def play():
                              text_input="Shop", font=buttonfont, base_color=black, hovering_color=red)
         next_round_button = Button(None, pos=(700, 650), 
                              text_input="Next Round", font=buttonfont, base_color=black, hovering_color=red)
-        settings_button = Button(transform.scale(pygame.image.load("Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
+        settings_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
                                  text_input="", font=buttonfont, base_color=white, hovering_color=white)
 
         for button in [menu_button, shop_button, next_round_button, settings_button]:
@@ -311,6 +315,21 @@ def play():
                     shop()
                 if settings_button.checkForInput(mousePos):
                     settings()
+                if gameStarted:
+                    for i in range(9):
+                        if mousex >= moles[i].x and mousex <= moles[i].x + 80 and \
+                            mousey >= moles[i].y and mousey <= moles[i].y + 62:
+                            if moles[i].status == 'alive':
+                                moles[i].image = moledead
+                                moles[i].status = 'dead'
+                                hitsound.play()
+                                points += 2
+                            elif moles[i].status == 'rabbitalive':
+                                moles[i].image = rabbitdead
+                                moles[i].status = 'dead'
+                            else:
+                                buzzer.play()
+                                points -= 1
             if event.type == TIMEREVENT:
             # this means our timer went off!
             # randomly set moles to be up or down
@@ -327,6 +346,7 @@ def play():
                                     r = random.randint(0,rabbitodds)
                                     if r == 1:
                                         moles[i].image = rabbitalive
+                                        moles[i].status = 'rabbitalive'
                                     elif r%2 == 0:
                                         moles[i].image = molealive_s
                                     else: moles[i].image = molealive_b
@@ -336,7 +356,13 @@ def play():
                                 if r == 1:
                                     moles[i].status = 'absent'
                                     moles[i].image = moleabsent
+                            elif moles[i].status == 'dead':
+                                moles[i].status = 'absent'
+                                moles[i].image = moleabsent
 
         pygame.display.update()
 
+intro_sequence()
+# maybe have it play a 7 sec empty audio then restart the previosuly playing aufio that way
+# it doesnt overlap music sewuence and sfx
 main_menu()
