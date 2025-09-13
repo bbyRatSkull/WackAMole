@@ -33,9 +33,9 @@ headerfont.set_bold(True)
 
 # Sounds we want to use
 pygame.mixer.init()
-#hitsound = pygame.mixer.Sound('hit.wav')
-#buzzer = pygame.mixer.Sound('buzzer.wav')
-#gameover = pygame.mixer.Sound('gameover.mp3')
+hitsound = pygame.mixer.Sound('Resources/Audio/hit.wav')
+buzzer = pygame.mixer.Sound('Resources/Audio/buzzer.wav')
+gameover = pygame.mixer.Sound('Resources/Audio/gameover.mp3')
 
 pygame.init()
 screenvar = pygame.display.get_desktop_sizes()
@@ -276,10 +276,9 @@ def tutorial():
         pygame.display.update()
 
 def play():
+    gameStarted = False
+    gameCompleted = False
     while True:
-        gameStarted = False
-        gameCompleted = False
-
         menu_button = Button(None, pos=(1000, 650), 
                              text_input="Main Menu", font=buttonfont, base_color=black, hovering_color=red)
         shop_button = Button(None, pos=(400, 650), 
@@ -338,6 +337,13 @@ def play():
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if menu_button.checkForInput(mousePos):
+                    gameStarted = False
+                    for i in range(9):
+                        moles[i].image = moleabsent
+                        moles[i].status = 'absent'
+                    gameCompleted = True
+                    gameover.play()
+                    pygame.mouse.set_cursor(pygame.cursors.Cursor())
                     main_menu()
                 if next_round_button.checkForInput(mousePos):
                     play()
@@ -360,14 +366,14 @@ def play():
                             if moles[i].status == 'alive':
                                 moles[i].image = moledead
                                 moles[i].status = 'dead'
-                                #hitsound.play()
+                                hitsound.play()
                                 score += 2
                             elif moles[i].status == 'rabbitalive':
                                 moles[i].image = rabbitdead
                                 moles[i].status = 'dead'
-                                #hitsound.play()
+                                hitsound.play()
                             else:
-                                #buzzer.play()
+                                buzzer.play()
                                 score -= 1
             
             #This has to be here, not sure why, but now it doesnt "glitch"
