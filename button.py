@@ -8,6 +8,7 @@ class Button():
 		self.base_color, self.hovering_color = base_color, hovering_color
 		self.text_input = text_input
 		self.text = self.font.render(self.text_input, True, self.base_color)
+		self.enabled = True
 
 		if self.image is None:
 			self.image = self.text
@@ -20,7 +21,7 @@ class Button():
 		screen.blit(self.text, self.text_rect)
 
 	def checkForInput(self, position):
-		if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
+		if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom) and self.enabled == True:
 			return True
 		return False
 

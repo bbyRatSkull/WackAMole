@@ -49,7 +49,8 @@ molestage1 = transform.scale(image.load(resource_path("Resources/Sprites/mole_st
 molestage2 = transform.scale(image.load(resource_path("Resources/Sprites/mole_stage2.PNG")).convert_alpha(), (225.6,225.6))
 molealive_s = transform.scale(image.load(resource_path("Resources/Sprites/mole_sb.PNG")).convert_alpha(), (225.6,225.6))
 molealive_b = transform.scale(image.load(resource_path("Resources/Sprites/mole_bb.PNG")).convert_alpha(), (225.6,225.6))
-moledead = transform.scale(image.load(resource_path("Resources/Sprites/red_splat.PNG")).convert_alpha(), (225.6,225.6))
+moledead_s = transform.scale(image.load(resource_path("Resources/Sprites/red_splat.PNG")).convert_alpha(), (225.6,225.6))
+moledead_b = transform.scale(image.load(resource_path("Resources/Sprites/blue_splat.PNG")).convert_alpha(), (225.6,225.6))
 rabbitalive = transform.scale(image.load(resource_path("Resources/Sprites/snowdrop.PNG")).convert_alpha(), (225.6,225.6))
 rabbitdead = transform.scale(image.load(resource_path("Resources/Sprites/snowdrop_ouch.PNG")).convert_alpha(), (225.6,225.6))
 
@@ -60,6 +61,7 @@ class Mole(Sprite):
         self.x = x
         self.y = y
         self.image = moleabsent
+        self.dead_image = moleabsent
         self.rect = self.image.get_rect().move(x,y)
         self.status = 'absent'
 
@@ -104,10 +106,10 @@ def update_jar(score):
         jar = transform.scale(pygame.image.load("Resources/Sprites/jar_low_med.PNG").convert_alpha(),(150,150))
     elif score >= 8 and score < 12:
         jar = transform.scale(pygame.image.load("Resources/Sprites/jar_med.PNG").convert_alpha(),(150,150))
-    elif score <=12 and score <17:
+    elif score >=12 and score <17:
         jar = transform.scale(pygame.image.load("Resources/Sprites/jar_med_high.PNG").convert_alpha(),(150,150))
     elif score >= 17:
-        jar = transform.scale(pygame.image.load("Resources/Sprites/jar_high.PNG").convert_alpha(),(150,150))
+        jar = transform.scale(pygame.image.load("Resources/Sprites/jar_full.PNG").convert_alpha(),(150,150))
     return(jar)
 
 def intro_sequence():
@@ -278,18 +280,18 @@ def tutorial():
 def play():
     gameStarted = False
     gameCompleted = False
-    while True:
-        menu_button = Button(None, pos=(1000, 650), 
-                             text_input="Main Menu", font=buttonfont, base_color=black, hovering_color=red)
-        shop_button = Button(None, pos=(400, 650), 
-                             text_input="Shop", font=buttonfont, base_color=black, hovering_color=red)
-        start_button = Button(None, pos=(400, 450), 
-                             text_input="Start", font=buttonfont, base_color=black, hovering_color=red)
-        next_round_button = Button(None, pos=(700, 650), 
-                             text_input="Next Round", font=buttonfont, base_color=black, hovering_color=red)
-        settings_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
-                                 text_input="", font=buttonfont, base_color=white, hovering_color=white)
 
+    menu_button = Button(None, pos=(1000, 650), 
+                         text_input="Main Menu", font=buttonfont, base_color=black, hovering_color=red)
+    shop_button = Button(None, pos=(400, 650), 
+                         text_input="Shop", font=buttonfont, base_color=black, hovering_color=red)
+    start_button = Button(None, pos=(400, 450), 
+                         text_input="Start", font=buttonfont, base_color=black, hovering_color=red)
+    next_round_button = Button(None, pos=(700, 650), 
+                         text_input="Next Round", font=buttonfont, base_color=black, hovering_color=red)
+    settings_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
+                         text_input="", font=buttonfont, base_color=white, hovering_color=white)
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -321,12 +323,16 @@ def play():
                                 r = random.randint(0,rabbitodds)
                                 if r == 1:
                                     moles[i].image = rabbitalive
+                                    moles[i].dead_image = rabbitdead
                                     moles[i].status = 'rabbitalive'
                                 elif r%2 == 0:
                                     moles[i].image = molealive_s
-                                else: moles[i].image = molealive_b
+                                    moles[i].dead_image = moledead_s
+                                else: 
+                                    moles[i].image = molealive_b
+                                    moles[i].dead_image = moledead_b
                         # if alive, randomly make it absent
-                        elif moles[i].status == 'alive':
+                        elif moles[i].status == 'alive' or moles[i].status == 'rabbitalive':
                             r = random.randint(1, absentodds)
                             if r == 1:
                                 moles[i].status = 'absent'
@@ -353,7 +359,7 @@ def play():
                     settings()
                 if start_button.checkForInput(mousePos):
                     gameStarted = True
-                    secondsRemaining = 120
+                    secondsRemaining = 60
                     score = 0
                     #pygame.mouse.set_visible(False)
                     #cursor_image = pygame.image.load("hammer.png")
@@ -361,17 +367,18 @@ def play():
 
                 if gameStarted:
                     for i in range(9):
-                        if mousex >= moles[i].x and mousex <= moles[i].x + 80 and \
-                            mousey >= moles[i].y and mousey <= moles[i].y + 62:
+                        if mousex >= moles[i].x and mousex <= moles[i].x + 225.6 and \
+                            mousey >= moles[i].y and mousey <= moles[i].y + 225.6:
                             if moles[i].status == 'alive':
-                                moles[i].image = moledead
+                                moles[i].image = moles[i].dead_image
                                 moles[i].status = 'dead'
                                 hitsound.play()
-                                score += 2
+                                score += 1
                             elif moles[i].status == 'rabbitalive':
-                                moles[i].image = rabbitdead
+                                moles[i].image = moles[i].dead_image
                                 moles[i].status = 'dead'
-                                hitsound.play()
+                                buzzer.play()
+                                score -= 1
                             else:
                                 buzzer.play()
                                 score -= 1
@@ -392,6 +399,8 @@ def play():
                 for button in [menu_button, settings_button]:
                     button.changeColor(mousePos)
                     button.update(screen)
+                for button in [shop_button, start_button, next_round_button]:
+                    button.enabled = False
 
                 minutes = str(secondsRemaining // 60)
                 seconds = str(secondsRemaining % 60)
@@ -424,6 +433,9 @@ def play():
                 for button in [menu_button, shop_button, start_button, next_round_button, settings_button]:
                     button.changeColor(mousePos)
                     button.update(screen)
+                shop_button.enabled = True
+                start_button.enabled = True
+                next_round_button.enabled = True
 
                 if gameCompleted:
                     print("the game finished")
