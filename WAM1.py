@@ -27,9 +27,8 @@ darkblue = (0,0,139)
 red = (255,0,0)
 
 # create some fonts
-headerfont = pygame.font.SysFont('helveticaneue', 48)
+settingsfont = pygame.font.SysFont('helveticaneue', 25)
 buttonfont = pygame.font.SysFont('helveticaneue',30)
-headerfont.set_bold(True)
 
 # Sounds we want to use
 pygame.mixer.init()
@@ -158,6 +157,15 @@ def main_menu(): #the main menu screen
         pygame.display.update()  
 
 def settings():
+    vol_button = Button(transform.scale(pygame.image.load("Resources/Sprites/volume_on.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
+                         text_input="Volume                  ", font=settingsfont, base_color=white, hovering_color=white)
+    music_button = Button(transform.scale(pygame.image.load("Resources/Sprites/music_on.PNG").convert_alpha(),(50,50)), pos=(1458, 178),
+                         text_input="Music                  ", font=settingsfont, base_color=white, hovering_color=white)
+    exit_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 238),
+                         text_input="Close Menu         ", font=settingsfont, base_color=white, hovering_color=white)
+    BG = transform.scale(pygame.image.load("Resources/Backgrounds/BG_Settings.PNG").convert_alpha(),GAME_SIZE)
+    screen.blit(BG, BG.get_rect(center = screen.get_rect().center))
+        
     while True: 
         #AHHHHHH
         mousePos = pygame.mouse.get_pos()
@@ -165,13 +173,7 @@ def settings():
         #trying to get an image to appear behind the buttons
         #screen.blit(myimage, (1458, 118))
 
-        vol_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
-                                 text_input="Volume", font=buttonfont, base_color=white, hovering_color=white)
-        music_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 178),
-                                 text_input="Music", font=buttonfont, base_color=white, hovering_color=white)
-        exit_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 238),
-                                 text_input="Close Menu", font=buttonfont, base_color=white, hovering_color=white)
-        
+
         for button in [vol_button, music_button, exit_button]:
             button.changeColor(mousePos)
             button.update(screen)
@@ -185,9 +187,23 @@ def settings():
                     return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if vol_button.checkForInput(mousePos):
-                    volume = 0
+                    if volume == 0:
+                        volume = 100
+                        vol_button = Button(transform.scale(pygame.image.load("Resources/Sprites/volume_on.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
+                         text_input="Volume         ", font=settingsfont, base_color=white, hovering_color=white)
+                    else: 
+                        volume = 0
+                        vol_button = Button(transform.scale(pygame.image.load("Resources/Sprites/volume_off.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
+                         text_input="Volume         ", font=settingsfont, base_color=white, hovering_color=white)
                 if music_button.checkForInput(mousePos):
-                    music = 0
+                    if music == 0:
+                        music = 100
+                        music_button = Button(transform.scale(pygame.image.load("Resources/Sprites/music_on.PNG").convert_alpha(),(50,50)), pos=(1458, 178),
+                         text_input="Music         ", font=settingsfont, base_color=white, hovering_color=white)
+                    else: 
+                        volume = 0
+                        music_button = Button(transform.scale(pygame.image.load("Resources/Sprites/music_off.PNG").convert_alpha(),(50,50)), pos=(1458, 178),
+                         text_input="Music         ", font=settingsfont, base_color=white, hovering_color=white)
                 if exit_button.checkForInput(mousePos):
                     return
 
