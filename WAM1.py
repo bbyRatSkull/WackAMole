@@ -157,24 +157,38 @@ def main_menu(): #the main menu screen
         pygame.display.update()  
 
 def settings():
-    vol_button = Button(transform.scale(pygame.image.load("Resources/Sprites/volume_on.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
-                         text_input="Volume                  ", font=settingsfont, base_color=white, hovering_color=white)
-    music_button = Button(transform.scale(pygame.image.load("Resources/Sprites/music_on.PNG").convert_alpha(),(50,50)), pos=(1458, 178),
-                         text_input="Music                  ", font=settingsfont, base_color=white, hovering_color=white)
-    exit_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 238),
-                         text_input="Close Menu         ", font=settingsfont, base_color=white, hovering_color=white)
-    BG = transform.scale(pygame.image.load("Resources/Backgrounds/BG_Settings.PNG").convert_alpha(),GAME_SIZE)
+    BG = transform.scale(pygame.image.load("Resources/Backgrounds/overlay.PNG").convert_alpha(),GAME_SIZE)
     screen.blit(BG, BG.get_rect(center = screen.get_rect().center))
+    volume_on_image = transform.scale(pygame.image.load("Resources/Sprites/volume_on.PNG").convert_alpha(),GAME_SIZE)
+    volume_off_image = transform.scale(pygame.image.load("Resources/Sprites/volume_off.PNG").convert_alpha(),GAME_SIZE)
+    music_on_image = transform.scale(pygame.image.load("Resources/Sprites/music_on.PNG").convert_alpha(),GAME_SIZE)
+    music_off_image = transform.scale(pygame.image.load("Resources/Sprites/music_off.PNG").convert_alpha(),GAME_SIZE)
+    tutorial_sign_image = transform.scale(pygame.image.load("Resources/Sprites/tutorial_sign.PNG").convert_alpha(),GAME_SIZE)
+    intro_sign_image = transform.scale(pygame.image.load("Resources/Sprites/intro_sign.PNG").convert_alpha(),GAME_SIZE)
+    back_sign_image = transform.scale(pygame.image.load("Resources/Sprites/back_sign.PNG").convert_alpha(),GAME_SIZE)
+    volume_button = Button(volume_on_image, pos=(0,0),
+                         text_input="Volume", font=settingsfont, base_color=white, hovering_color=white)
+    music_button = Button(music_on_image, pos=(0,0),
+                         text_input="Music", font=settingsfont, base_color=white, hovering_color=white)
+    tutorial_button = Button(tutorial_sign_image, pos=(0,0),
+                         text_input="Tutorial", font=settingsfont, base_color=white, hovering_color=white)
+    intro_button = Button(intro_sign_image, pos=(0,0),
+                         text_input="Replay Intro", font=settingsfont, base_color=white, hovering_color=white)
+    back_button = Button(back_sign_image, pos=(0,0),
+                         text_input="Back", font=settingsfont, base_color=white, hovering_color=white)
         
+    #temp here til permanent variables get added
+    volume = 100
+    music = 100
+
     while True: 
-        #AHHHHHH
         mousePos = pygame.mouse.get_pos()
 
         #trying to get an image to appear behind the buttons
         #screen.blit(myimage, (1458, 118))
 
 
-        for button in [vol_button, music_button, exit_button]:
+        for button in [volume_button, music_button, tutorial_button, intro_button, back_button]:
             button.changeColor(mousePos)
             button.update(screen)
 
@@ -186,25 +200,28 @@ def settings():
                 if event.key == K_ESCAPE:
                     return
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if vol_button.checkForInput(mousePos):
+                if volume_button.checkForInput(mousePos):
                     if volume == 0:
                         volume = 100
-                        vol_button = Button(transform.scale(pygame.image.load("Resources/Sprites/volume_on.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
-                         text_input="Volume         ", font=settingsfont, base_color=white, hovering_color=white)
+                        volume_button.image = volume_on_image
                     else: 
                         volume = 0
-                        vol_button = Button(transform.scale(pygame.image.load("Resources/Sprites/volume_off.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
-                         text_input="Volume         ", font=settingsfont, base_color=white, hovering_color=white)
+                        volume_button.image = volume_off_image
+                    volume_button.update(screen)
                 if music_button.checkForInput(mousePos):
                     if music == 0:
                         music = 100
-                        music_button = Button(transform.scale(pygame.image.load("Resources/Sprites/music_on.PNG").convert_alpha(),(50,50)), pos=(1458, 178),
-                         text_input="Music         ", font=settingsfont, base_color=white, hovering_color=white)
+                        music_button.image = music_on_image
                     else: 
                         volume = 0
-                        music_button = Button(transform.scale(pygame.image.load("Resources/Sprites/music_off.PNG").convert_alpha(),(50,50)), pos=(1458, 178),
-                         text_input="Music         ", font=settingsfont, base_color=white, hovering_color=white)
-                if exit_button.checkForInput(mousePos):
+                        music_button.image = music_off_image
+                if tutorial_button.checkForInput(mousePos):
+                    tutorial()
+                    return
+                if intro_button.checkForInput(mousePos):
+                    intro_sequence()
+                    return
+                if back_button.checkForInput(mousePos):
                     return
 
         pygame.display.update()  
