@@ -48,6 +48,8 @@ molestage1 = transform.scale(image.load(resource_path("Resources/Sprites/mole_st
 molestage2 = transform.scale(image.load(resource_path("Resources/Sprites/mole_stage2.PNG")).convert_alpha(), (225.6,225.6))
 molealive_s = transform.scale(image.load(resource_path("Resources/Sprites/mole_sb.PNG")).convert_alpha(), (225.6,225.6))
 molealive_b = transform.scale(image.load(resource_path("Resources/Sprites/mole_bb.PNG")).convert_alpha(), (225.6,225.6))
+molefrozen_s = transform.scale(image.load(resource_path("Resources/Sprites/frozen_sb.PNG")).convert_alpha(), (225.6,225.6))
+molefrozen_b = transform.scale(image.load(resource_path("Resources/Sprites/frozen_bb.PNG")).convert_alpha(), (225.6,225.6))
 moledead_s = transform.scale(image.load(resource_path("Resources/Sprites/red_splat.PNG")).convert_alpha(), (225.6,225.6))
 moledead_b = transform.scale(image.load(resource_path("Resources/Sprites/blue_splat.PNG")).convert_alpha(), (225.6,225.6))
 rabbitalive = transform.scale(image.load(resource_path("Resources/Sprites/snowdrop.PNG")).convert_alpha(), (225.6,225.6))
@@ -334,7 +336,11 @@ def play(volume,music):
     
     snow_power = Button(transform.scale(pygame.image.load("Resources/Sprites/snow.PNG").convert_alpha(),(96,96)), pos=(550, 860), 
                          text_input=None, font=buttonfont, base_color=black, hovering_color=red)
-    double_power = Button(transform.scale(pygame.image.load("Resources/Sprites/double.PNG").convert_alpha(),(96,96)), pos=(800, 860), 
+    double_power = Button(transform.scale(pygame.image.load("Resources/Sprites/double.PNG").convert_alpha(),(96,96)), pos=(690, 860), 
+                         text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+    bell_power = Button(transform.scale(pygame.image.load("Resources/Sprites/bell.PNG").convert_alpha(),(96,96)), pos=(830, 860), 
+                         text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+    hourglass_power = Button(transform.scale(pygame.image.load("Resources/Sprites/hourglass.PNG").convert_alpha(),(96,96)), pos=(970, 860), 
                          text_input=None, font=buttonfont, base_color=black, hovering_color=red)
 
     while True:
@@ -424,7 +430,7 @@ def play(volume,music):
                     for i in range(9):
                         if mousex >= moles[i].x and mousex <= moles[i].x + 225.6 and \
                             mousey >= moles[i].y and mousey <= moles[i].y + 225.6:
-                            if moles[i].status == 'alive':
+                            if moles[i].status == 'alive' or moles[i].status == 'frozen':
                                 moles[i].image = moles[i].dead_image
                                 moles[i].status = 'dead'
                                 hitsound.play()
@@ -448,11 +454,9 @@ def play(volume,music):
             allmoles.draw(screen)
 
             if gameStarted:
-                cursor_rect.center = pygame.mouse.get_pos()
-                screen.blit(cursor_image, (cursor_rect[0] + 82, cursor_rect[1]-10))
 
             # currently, these buttons are OVER the cursor... ?? 
-                for button in [menu_button, settings_button, snow_power, double_power]:
+                for button in [menu_button, settings_button, snow_power, double_power, bell_power, hourglass_power]:
                     button.changeColor(mousePos)
                     button.update(screen)
                 for button in [shop_button, start_button, next_round_button]:
@@ -473,6 +477,9 @@ def play(volume,music):
             
                 jar = update_jar(score)
                 screen.blit(jar, (1350, 740))
+
+                cursor_rect.center = pygame.mouse.get_pos()
+                screen.blit(cursor_image, (cursor_rect[0] + 82, cursor_rect[1]-10))
 
                 if secondsRemaining < 0:
                     gameStarted = False
