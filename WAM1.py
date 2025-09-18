@@ -10,9 +10,9 @@ import moviepy.editor
 
 # need for making .exe later
 def resource_path(relative_path):
-    try:
+    if hasattr(sys, "_MEIPASS"):
         base_path = sys._MEIPASS
-    except Exception:
+    else:
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
@@ -32,9 +32,9 @@ buttonfont = pygame.font.SysFont('helveticaneue',30)
 
 # Sounds we want to use
 pygame.mixer.init()
-hitsound = pygame.mixer.Sound('Resources/Audio/hit.wav')
-buzzer = pygame.mixer.Sound('Resources/Audio/buzzer.wav')
-gameover = pygame.mixer.Sound('Resources/Audio/gameover.mp3')
+hitsound = pygame.mixer.Sound(resource_path('Resources/Audio/hit.wav'))
+buzzer = pygame.mixer.Sound(resource_path('Resources/Audio/buzzer.wav'))
+gameover = pygame.mixer.Sound(resource_path('Resources/Audio/gameover.mp3'))
 
 pygame.init()
 screenvar = pygame.display.get_desktop_sizes()
@@ -114,7 +114,7 @@ def update_jar(score):
     return(jar)
 
 def intro_sequence():
-    intro = moviepy.editor.VideoFileClip("Resources/Backgrounds/Intro_video.mov")
+    intro = moviepy.editor.VideoFileClip(resource_path("Resources/Backgrounds/Intro_video.mov"))
     intro_resized = intro.resize(newsize=(1504, 846))
     intro_resized.preview(fullscreen=True)
 
@@ -122,7 +122,7 @@ def main_menu(volume, music): #the main menu screen
     while True:
         screen.fill(black)
         # loads in image and scales it to screen size
-        BG = transform.scale(pygame.image.load("Resources/Backgrounds/BG_Menu.PNG").convert(),GAME_SIZE)
+        BG = transform.scale(pygame.image.load(resource_path("Resources/Backgrounds/BG_Menu.PNG")).convert(),GAME_SIZE)
         screen.blit(BG, BG.get_rect(center = screen.get_rect().center)) 
         
 
@@ -132,7 +132,7 @@ def main_menu(volume, music): #the main menu screen
                              text_input="Play", font=buttonfont, base_color=darkbrown, hovering_color=pink)
         quit_button = Button(None, pos=(1248.325, 744.8), 
                              text_input="Quit", font=buttonfont, base_color=darkbrown, hovering_color=pink)
-        settings_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
+        settings_button = Button(transform.scale(pygame.image.load(resource_path("Resources/Sprites/gear.PNG")).convert_alpha(),(50,50)), pos=(1458, 118),
                                  text_input="", font=buttonfont, base_color=white, hovering_color=white)
 
         for button in [play_button, quit_button, settings_button]:
