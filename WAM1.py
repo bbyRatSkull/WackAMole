@@ -319,6 +319,15 @@ def tutorial(volume,music):
 def play(volume,music):
     gameStarted = False
     gameCompleted = False
+
+    aliveodds = 10
+    absentodds = 3
+    rabbitodds = 10
+
+    time_added = 0
+    doubling = False
+    time_at_double = 0
+
     for i in range(9):
         moles[i].image = moleabsent
         moles[i].status = 'absent'
@@ -334,13 +343,13 @@ def play(volume,music):
     settings_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
                          text_input="", font=buttonfont, base_color=white, hovering_color=white)
     
-    snow_power = Button(transform.scale(pygame.image.load("Resources/Sprites/snow.PNG").convert_alpha(),(96,96)), pos=(550, 860), 
+    snow_power = Button(transform.scale(pygame.image.load("Resources/Sprites/snow.PNG").convert_alpha(),(96,96)), pos=(970, 860), 
                          text_input=None, font=buttonfont, base_color=black, hovering_color=red)
-    double_power = Button(transform.scale(pygame.image.load("Resources/Sprites/double.PNG").convert_alpha(),(96,96)), pos=(690, 860), 
+    double_power = Button(transform.scale(pygame.image.load("Resources/Sprites/double.PNG").convert_alpha(),(96,96)), pos=(830, 860), 
                          text_input=None, font=buttonfont, base_color=black, hovering_color=red)
-    bell_power = Button(transform.scale(pygame.image.load("Resources/Sprites/bell.PNG").convert_alpha(),(96,96)), pos=(830, 860), 
+    bell_power = Button(transform.scale(pygame.image.load("Resources/Sprites/bell.PNG").convert_alpha(),(96,96)), pos=(550, 860), 
                          text_input=None, font=buttonfont, base_color=black, hovering_color=red)
-    hourglass_power = Button(transform.scale(pygame.image.load("Resources/Sprites/hourglass.PNG").convert_alpha(),(96,96)), pos=(970, 860), 
+    hourglass_power = Button(transform.scale(pygame.image.load("Resources/Sprites/hourglass.PNG").convert_alpha(),(96,96)), pos=(690, 860), 
                          text_input=None, font=buttonfont, base_color=black, hovering_color=red)
 
     while True:
@@ -372,9 +381,6 @@ def play(volume,music):
                     secondsRemaining -= 1
                     for i in range(9):
                         # if mole was absent, randomly makeit alive
-                        aliveodds = 10
-                        absentodds = 3
-                        rabbitodds = 10
                         if moles[i].status == 'absent':
                             r = random.randint(1,aliveodds)
                             if r == 1:
@@ -425,6 +431,25 @@ def play(volume,music):
                     pygame.mouse.set_visible(False)
                     cursor_image = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor.PNG").convert_alpha(), (320,180))
                     cursor_rect = cursor_image.get_rect()
+                if bell_power.checkForInput(mousePos):
+                    aliveodds = 1
+                    absentodds = 10
+                if hourglass_power.checkForInput(mousePos):
+                    secondsRemaining += 20
+                    if doubling is True:
+                        time_added += 20
+                if double_power.checkForInput(mousePos):
+                    doubling = True
+                    time_at_double = secondsRemaining
+
+                if snow_power.checkForInput(mousePos):
+                    for i in range(9):
+                        if moles[i].status == "alive":
+                            if moles[i].image == molealive_s:
+                                moles[i].image = molefrozen_s
+                            else:
+                                moles[i].image = molefrozen_b
+                            moles[i].status = 'frozen'
 
                 if gameStarted:
                     for i in range(9):
@@ -434,14 +459,23 @@ def play(volume,music):
                                 moles[i].image = moles[i].dead_image
                                 moles[i].status = 'dead'
                                 hitsound.play()
+                                if doubling is True:
+                                    score += 1
                                 score += 1
+                                if aliveodds == 1:
+                                    aliveodds = 10
+                                    absentodds = 3
                             elif moles[i].status == 'rabbitalive':
                                 moles[i].image = moles[i].dead_image
                                 moles[i].status = 'dead'
                                 buzzer.play()
+                                if doubling is True:
+                                    score -= 1
                                 score -= 1
                             else:
                                 buzzer.play()
+                                if doubling is True:
+                                    score -= 1
                                 score -= 1
             
             #This has to be here, not sure why, but now it doesnt "glitch"
@@ -461,6 +495,8 @@ def play(volume,music):
                     button.update(screen)
                 for button in [shop_button, start_button, next_round_button]:
                     button.enabled = False
+                for button in [bell_power, hourglass_power, double_power, snow_power]:
+                    button.enabled = True
 
                 minutes = str(secondsRemaining // 60)
                 seconds = str(secondsRemaining % 60)
@@ -490,6 +526,9 @@ def play(volume,music):
                     gameover.play()
                     #idk if this nect line is needed
                     pygame.mouse.set_cursor(pygame.cursors.Cursor())
+            
+                if time_at_double - 20 + time_added == secondsRemaining:
+                    doubling = False
 
             else: 
                 pygame.mouse.set_visible(True)
@@ -497,16 +536,59 @@ def play(volume,music):
                 for button in [menu_button, shop_button, start_button, settings_button]:
                     button.changeColor(mousePos)
                     button.update(screen)
-                shop_button.enabled = True
-                start_button.enabled = True
-                next_round_button.enabled = True
+                for button in [shop_button, start_button, next_round_button]:
+                    button.enabled = True
+                for button in [bell_power, hourglass_power, double_power, snow_power]:
+                    button.enabled = False
 
                 if gameCompleted:
                     print("the game finished")
+                    game_finished(volume, music, score)
 
 
 
         pygame.display.update()
+
+def game_finished(volume, music, score):
+    while True:
+        mousePos = pygame.mouse.get_pos()
+
+        screen.fill(black)
+        # loads in image and scales it to screen size
+        screen.fill(pink)
+        #BG = transform.scale(pygame.image.load("Resources/Backgrounds/BG_Score.PNG").convert(),GAME_SIZE)
+        # blits the image to the center of the surface "screen"
+        #screen.blit(BG, BG.get_rect(center = screen.get_rect().center))
+
+        # create some text
+        headerText = buttonfont.render("This is your score" + str(score), True, black, pink)
+        headerRect = headerText.get_rect()
+        headerRect.center = (350,50)
+        pygame.draw.rect(screen,pink,headerRect)
+        screen.blit(headerText, headerRect)
+
+        back_button = Button(None, pos=(100, 118), 
+                    text_input="Back", font=buttonfont, base_color=white, hovering_color=white)
+
+        for button in [back_button]:
+            button.changeColor(mousePos)
+            button.update(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == K_ESCAPE:
+                    return
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if back_button.checkForInput(mousePos):
+                    return
+
+        pygame.display.update()
+
 
 intro_sequence()
 # maybe have it play a 7 sec empty audio then restart the previosuly playing aufio that way
