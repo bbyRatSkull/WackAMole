@@ -260,23 +260,23 @@ def shop(volume,music):
             button.update(screen)
 
         for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == K_ESCAPE:
-                        return volume, music
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if back_button.checkForInput(mousePos):
-                        volume, music = play(volume,music)
-                    if settings_button.checkForInput(mousePos):
-                        volume, music = settings(volume, music)
-                    if snow_power.checkForInput(mousePos):
-                        print("SNOW WORKS")
-                    if double_power.checkForInput(mousePos):
-                        print("DOUBLE WORKS")
-                    if placeholder_power.checkForInput(mousePos):
-                        print("PLACEHOLDER WORKS")
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == K_ESCAPE:
+                    return volume, music
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if back_button.checkForInput(mousePos):
+                    volume, music = play(volume,music)
+                if settings_button.checkForInput(mousePos):
+                    volume, music = settings(volume, music)
+                if snow_power.checkForInput(mousePos):
+                    print("SNOW WORKS")
+                if double_power.checkForInput(mousePos):
+                    print("DOUBLE WORKS")
+                if placeholder_power.checkForInput(mousePos):
+                    print("PLACEHOLDER WORKS")
         
         pygame.display.update()  
 
@@ -338,8 +338,6 @@ def play(volume,music):
                          text_input="Shop", font=buttonfont, base_color=darkbrown, hovering_color=pink)
     start_button = Button(None, pos=(550, 830), 
                          text_input="Start", font=buttonfont, base_color=darkbrown, hovering_color=pink)
-    next_round_button = Button(None, pos=(700, 650), 
-                         text_input="Next Round", font=buttonfont, base_color=black, hovering_color=red)
     settings_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
                          text_input="", font=buttonfont, base_color=white, hovering_color=white)
     
@@ -416,8 +414,6 @@ def play(volume,music):
                     gameover.play()
                     pygame.mouse.set_visible(True)
                     main_menu(volume, music)
-                if next_round_button.checkForInput(mousePos):
-                    play(volume,music)
                 if shop_button.checkForInput(mousePos):
                     volume, music = shop(volume,music)
                 if settings_button.checkForInput(mousePos):
@@ -493,7 +489,7 @@ def play(volume,music):
                 for button in [menu_button, settings_button, snow_power, double_power, bell_power, hourglass_power]:
                     button.changeColor(mousePos)
                     button.update(screen)
-                for button in [shop_button, start_button, next_round_button]:
+                for button in [shop_button, start_button]:
                     button.enabled = False
                 for button in [bell_power, hourglass_power, double_power, snow_power]:
                     button.enabled = True
@@ -536,7 +532,7 @@ def play(volume,music):
                 for button in [menu_button, shop_button, start_button, settings_button]:
                     button.changeColor(mousePos)
                     button.update(screen)
-                for button in [shop_button, start_button, next_round_button]:
+                for button in [shop_button, start_button]:
                     button.enabled = True
                 for button in [bell_power, hourglass_power, double_power, snow_power]:
                     button.enabled = False
@@ -544,6 +540,7 @@ def play(volume,music):
                 if gameCompleted:
                     print("the game finished")
                     game_finished(volume, music, score)
+                    gameCompleted = False
 
 
 
@@ -562,15 +559,15 @@ def game_finished(volume, music, score):
 
         # create some text
         headerText = buttonfont.render("This is your score" + str(score), True, black, pink)
-        headerRect = headerText.get_rect()
-        headerRect.center = (350,50)
-        pygame.draw.rect(screen,pink,headerRect)
+        headerRect = headerText.get_rect(center=(350,50))
         screen.blit(headerText, headerRect)
 
-        back_button = Button(None, pos=(100, 118), 
-                    text_input="Back", font=buttonfont, base_color=white, hovering_color=white)
+        menu_button = Button(None, pos=(100, 118), 
+                    text_input="Main Menu", font=buttonfont, base_color=white, hovering_color=white)
+        continue_button = Button(None, pos=(700, 650), 
+                         text_input="Continue", font=buttonfont, base_color=black, hovering_color=red)
 
-        for button in [back_button]:
+        for button in [menu_button, continue_button]:
             button.changeColor(mousePos)
             button.update(screen)
 
@@ -584,7 +581,9 @@ def game_finished(volume, music, score):
                     return
             
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if back_button.checkForInput(mousePos):
+                if menu_button.checkForInput(mousePos):
+                    main_menu(volume, music)
+                if continue_button.checkForInput(mousePos):
                     return
 
         pygame.display.update()
