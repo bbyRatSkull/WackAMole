@@ -55,6 +55,8 @@ moledead_b = transform.scale(image.load(resource_path("Resources/Sprites/blue_sp
 rabbitalive = transform.scale(image.load(resource_path("Resources/Sprites/snowdrop.PNG")).convert_alpha(), (225.6,225.6))
 rabbitdead = transform.scale(image.load(resource_path("Resources/Sprites/snowdrop_ouch.PNG")).convert_alpha(), (225.6,225.6))
 
+current_cursor = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor_orange.PNG").convert_alpha(), (320,180))
+
 # Mole class
 class Mole(Sprite):
     def __init__(self, x, y):
@@ -118,7 +120,7 @@ def intro_sequence():
     intro_resized = intro.resize(newsize=(1504, 846))
     intro_resized.preview(fullscreen=True)
 
-def main_menu(volume, music): #the main menu screen
+def main_menu(volume, music, current_cursor): #the main menu screen
     while True:
         screen.fill(black)
         # loads in image and scales it to screen size
@@ -134,7 +136,7 @@ def main_menu(volume, music): #the main menu screen
                              text_input="Quit", font=buttonfont, base_color=darkbrown, hovering_color=pink)
         settings_button = Button(transform.scale(pygame.image.load(resource_path("Resources/Sprites/gear.PNG")).convert_alpha(),(50,50)), pos=(1458, 118),
                                  text_input="", font=buttonfont, base_color=white, hovering_color=white)
-
+        
         for button in [play_button, quit_button, settings_button]:
             button.changeColor(mousePos)
             button.update(screen)
@@ -149,16 +151,16 @@ def main_menu(volume, music): #the main menu screen
                     sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button.checkForInput(mousePos):
-                    volume, music = tutorial(volume,music)
+                    volume, music = tutorial(volume,music, current_cursor)
                 if settings_button.checkForInput(mousePos):
-                    volume, music = settings(volume, music)
+                    volume, music, current_cursor= settings(volume, music, current_cursor)
                 if quit_button.checkForInput(mousePos):
                     pygame.quit()
                     sys.exit()
 
         pygame.display.update()  
 
-def settings(volume, music):
+def settings(volume, music, current_cursor):
     BG = transform.scale(pygame.image.load("Resources/Backgrounds/overlay.PNG").convert_alpha(),GAME_SIZE)
     screen.blit(BG, BG.get_rect(center = screen.get_rect().center))
 
@@ -221,41 +223,69 @@ def settings(volume, music):
                         music = False
                         music_button.image = music_off_image
                 if tutorial_button.checkForInput(mousePos):
-                    volume, music = tutorial(volume,music)
-                    return volume, music
+                    volume, music, current_cursor = tutorial(volume,music, current_cursor)
+                    return volume, music, current_cursor
                 if intro_button.checkForInput(mousePos):
                     intro_sequence()
-                    main_menu(volume, music)
+                    main_menu(volume, music, current_cursor)
                 if back_button.checkForInput(mousePos):
                     return volume, music
 
         pygame.display.update()  
 
-def shop(volume,music):
+def shop(volume,music, current_cursor):
+    settings_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
+                             text_input="", font=buttonfont, base_color=white, hovering_color=white)
+    back_button = Button(transform.scale(pygame.image.load("Resources/Sprites/back_arrow.PNG").convert_alpha(),(50,50)), pos=(54, 118),
+                             text_input="", font=buttonfont, base_color=black, hovering_color=red)
+        
+    snow_power = Button(pygame.image.load("Resources/Sprites/snow_shop.PNG").convert_alpha(), pos=(587, 549), 
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+    double_power = Button(pygame.image.load("Resources/Sprites/double_shop.PNG").convert_alpha(), pos=(359, 490), 
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+    hourglass_power = Button(pygame.image.load("Resources/Sprites/hourglass_shop.PNG").convert_alpha(), pos=(150, 600), 
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+    bell_power = Button(pygame.image.load("Resources/Sprites/bell_shop.PNG").convert_alpha(), pos=(150, 600), 
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+        
+    red_paint = Button(pygame.image.load("Resources/Sprites/red_paint.PNG").convert_alpha(), pos=(1078, 490), 
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+    orange_paint = Button(pygame.image.load("Resources/Sprites/orange_paint.PNG").convert_alpha(), pos=(1110, 551), 
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+    green_paint = Button(pygame.image.load("Resources/Sprites/green_paint.PNG").convert_alpha(), pos=(1078, 308), 
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+    teal_paint = Button(pygame.image.load("Resources/Sprites/teal_paint.PNG").convert_alpha(), pos=(1158, 368), 
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+    blue_paint = Button(pygame.image.load("Resources/Sprites/blue_paint.PNG").convert_alpha(), pos=(1158, 490), 
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+    purple_paint = Button(pygame.image.load("Resources/Sprites/purple_paint.PNG").convert_alpha(), pos=(1110, 368), 
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+    pink_paint = Button(pygame.image.load("Resources/Sprites/pink_paint.PNG").convert_alpha(), pos=(1195, 551), 
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+    black_paint = Button(pygame.image.load("Resources/Sprites/black_paint.PNG").convert_alpha(), pos=(1195, 430), 
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+    
+    red_hammer = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor_red.PNG").convert_alpha(), (320,180))
+    orange_hammer = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor_orange.PNG").convert_alpha(), (320,180))
+    green_hammer = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor_green.PNG").convert_alpha(), (320,180)) 
+    teal_hammer = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor_teal.PNG").convert_alpha(), (320,180))
+    blue_hammer = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor_blue.PNG").convert_alpha(), (320,180))
+    purple_hammer = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor_purple.PNG").convert_alpha(), (320,180))
+    pink_hammer = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor_pink.PNG").convert_alpha(), (320,180))
+    black_hammer = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor_black.PNG").convert_alpha(), (320,180))
     while True:    
-        screen.fill(darkblue)
+        screen.fill(black)
+        BG = transform.scale(pygame.image.load(resource_path("Resources/Backgrounds/BG_Shop.PNG")).convert(),GAME_SIZE)
+        screen.blit(BG, BG.get_rect(center = screen.get_rect().center)) 
 
         mousePos = pygame.mouse.get_pos()
-        mousex = mousePos[0]
-        mousey = mousePos[1]
 
         shop_text = buttonfont.render("Welcome to the shop!", True, black)
         shop_rect = shop_text.get_rect(center=(640, 100))
         screen.blit(shop_text, shop_rect)
 
-        settings_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
-                                 text_input="", font=buttonfont, base_color=white, hovering_color=white)
-        back_button = Button(None, pos=(1000, 600),
-                                text_input="Back", font=buttonfont, base_color=black, hovering_color=red)
-        
-        snow_power = Button(transform.scale(pygame.image.load("Resources/Sprites/snow.PNG").convert_alpha(),(72,72)), pos=(100, 600), 
-                                text_input=None, font=buttonfont, base_color=black, hovering_color=red)
-        double_power = Button(transform.scale(pygame.image.load("Resources/Sprites/double.PNG").convert_alpha(),(72,72)), pos=(150, 600), 
-                                text_input=None, font=buttonfont, base_color=black, hovering_color=red)
-        placeholder_power = Button(None, pos=(250, 600), 
-                                text_input="Placeholder", font=buttonfont, base_color=black, hovering_color=red)
-
-        for button in [back_button, settings_button, snow_power, double_power, placeholder_power]:
+        for button in [back_button, settings_button, snow_power, double_power, hourglass_power, bell_power,
+                       red_paint, orange_paint, green_paint, teal_paint, blue_paint, purple_paint, pink_paint, black_paint]:
             button.changeColor(mousePos)
             button.update(screen)
 
@@ -265,22 +295,42 @@ def shop(volume,music):
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == K_ESCAPE:
-                    return volume, music
+                    return volume, music, current_cursor
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mousePos):
-                    volume, music = play(volume,music)
+                    volume, music, current_cursor = play(volume, music, current_cursor)
+
                 if settings_button.checkForInput(mousePos):
-                    volume, music = settings(volume, music)
+                    volume, music, current_cursor= settings(volume, music, current_cursor)
                 if snow_power.checkForInput(mousePos):
                     print("SNOW WORKS")
                 if double_power.checkForInput(mousePos):
                     print("DOUBLE WORKS")
-                if placeholder_power.checkForInput(mousePos):
+                if hourglass_power.checkForInput(mousePos):
                     print("PLACEHOLDER WORKS")
+                if bell_power.checkForInput(mousePos):
+                    pass
+
+                if red_paint.checkForInput(mousePos):
+                    current_cursor = red_hammer
+                if orange_paint.checkForInput(mousePos):
+                    current_cursor = orange_hammer
+                if green_paint.checkForInput(mousePos):
+                    current_cursor = green_hammer
+                if teal_paint.checkForInput(mousePos):
+                    current_cursor = teal_hammer
+                if blue_paint.checkForInput(mousePos):
+                    current_cursor = blue_hammer
+                if purple_paint.checkForInput(mousePos):
+                    current_cursor = purple_hammer
+                if pink_paint.checkForInput(mousePos):
+                    current_cursor = pink_hammer
+                if black_paint.checkForInput(mousePos):
+                    current_cursor = black_hammer
         
         pygame.display.update()  
 
-def tutorial(volume,music):
+def tutorial(volume,music, current_cursor):
     while True:
         screen.fill(lightblue)
 
@@ -310,13 +360,13 @@ def tutorial(volume,music):
                     return volume, music
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if menu_button.checkForInput(mousePos):
-                    main_menu(volume, music)
+                    main_menu(volume, music, current_cursor)
                 if skip_tutorial_button.checkForInput(mousePos):
-                    volume, music = play(volume,music)
+                    volume, music = play(volume,music, current_cursor)
 
         pygame.display.update()
 
-def play(volume,music):
+def play(volume,music, current_cursor):
     gameStarted = False
     gameCompleted = False
 
@@ -365,7 +415,7 @@ def play(volume,music):
                     gameCompleted = True
                     gameover.play()
                     pygame.mouse.set_visible(True)
-                    main_menu(volume, music)
+                    main_menu(volume, music, current_cursor)
 
             # find mouse position
             mousePos = pygame.mouse.get_pos()
@@ -413,19 +463,19 @@ def play(volume,music):
                     gameCompleted = True
                     gameover.play()
                     pygame.mouse.set_visible(True)
-                    main_menu(volume, music)
+                    main_menu(volume, music, current_cursor)
                 if shop_button.checkForInput(mousePos):
-                    volume, music = shop(volume,music)
+                    volume, music, current_cursor = shop(volume,music, current_cursor)
                 if settings_button.checkForInput(mousePos):
                     pygame.mouse.set_visible(True)
-                    volume, music = settings(volume, music)
+                    volume, music, current_cursor = settings(volume, music, current_cursor)
                     pygame.mouse.set_visible(False)
                 if start_button.checkForInput(mousePos):
                     gameStarted = True
                     secondsRemaining = 60
                     score = 0
                     pygame.mouse.set_visible(False)
-                    cursor_image = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor.PNG").convert_alpha(), (320,180))
+                    cursor_image = current_cursor
                     cursor_rect = cursor_image.get_rect()
                 if bell_power.checkForInput(mousePos):
                     aliveodds = 1
@@ -511,7 +561,7 @@ def play(volume,music):
                 screen.blit(jar, (1350, 740))
 
                 cursor_rect.center = pygame.mouse.get_pos()
-                screen.blit(cursor_image, (cursor_rect[0] + 82, cursor_rect[1]-10))
+                screen.blit(cursor_image, (cursor_rect[0] + 138, cursor_rect[1]-2))
 
                 if secondsRemaining < 0:
                     gameStarted = False
@@ -523,7 +573,7 @@ def play(volume,music):
                     #idk if this nect line is needed
                     pygame.mouse.set_cursor(pygame.cursors.Cursor())
             
-                if time_at_double - 20 + time_added == secondsRemaining:
+                if time_at_double - 10 + time_added == secondsRemaining:
                     doubling = False
 
             else: 
@@ -539,14 +589,14 @@ def play(volume,music):
 
                 if gameCompleted:
                     print("the game finished")
-                    game_finished(volume, music, score)
+                    game_finished(volume, music, current_cursor, score)
                     gameCompleted = False
 
 
 
         pygame.display.update()
 
-def game_finished(volume, music, score):
+def game_finished(volume, music, current_cursor, score):
     while True:
         mousePos = pygame.mouse.get_pos()
 
@@ -582,7 +632,7 @@ def game_finished(volume, music, score):
             
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if menu_button.checkForInput(mousePos):
-                    main_menu(volume, music)
+                    main_menu(volume, music, current_cursor)
                 if continue_button.checkForInput(mousePos):
                     return
 
@@ -592,4 +642,4 @@ def game_finished(volume, music, score):
 intro_sequence()
 # maybe have it play a 7 sec empty audio then restart the previosuly playing aufio that way
 # it doesnt overlap music sewuence and sfx
-main_menu(volume= True, music= True)
+main_menu(volume= True, music= True, current_cursor=current_cursor)
