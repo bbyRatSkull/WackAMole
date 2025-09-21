@@ -28,7 +28,8 @@ red = (255,0,0)
 
 # create some fonts
 settingsfont = pygame.font.SysFont('helveticaneue', 24)
-buttonfont = pygame.font.SysFont('helveticaneue',30)
+#buttonfont = pygame.font.SysFont('helveticaneue',30)
+buttonfont = pygame.font.SysFont('boldpixels',40)
 
 # Sounds we want to use
 pygame.mixer.init()
@@ -238,14 +239,15 @@ def shop(volume,music, current_cursor):
                              text_input="", font=buttonfont, base_color=white, hovering_color=white)
     back_button = Button(transform.scale(pygame.image.load("Resources/Sprites/back_arrow.PNG").convert_alpha(),(50,50)), pos=(54, 118),
                              text_input="", font=buttonfont, base_color=black, hovering_color=red)
+    speech_bubble = pygame.image.load("Resources/Sprites/speech_bubble.PNG").convert_alpha()
         
     snow_power = Button(pygame.image.load("Resources/Sprites/snow_shop.PNG").convert_alpha(), pos=(587, 549), 
                              text_input=None, font=buttonfont, base_color=black, hovering_color=red)
     double_power = Button(pygame.image.load("Resources/Sprites/double_shop.PNG").convert_alpha(), pos=(359, 490), 
                              text_input=None, font=buttonfont, base_color=black, hovering_color=red)
-    hourglass_power = Button(pygame.image.load("Resources/Sprites/hourglass_shop.PNG").convert_alpha(), pos=(150, 600), 
+    hourglass_power = Button(pygame.image.load("Resources/Sprites/hourglass_shop.PNG").convert_alpha(), pos=(442, 524), 
                              text_input=None, font=buttonfont, base_color=black, hovering_color=red)
-    bell_power = Button(pygame.image.load("Resources/Sprites/bell_shop.PNG").convert_alpha(), pos=(150, 600), 
+    bell_power = Button(pygame.image.load("Resources/Sprites/bell_shop.PNG").convert_alpha(), pos=(467, 433), 
                              text_input=None, font=buttonfont, base_color=black, hovering_color=red)
         
     red_paint = Button(pygame.image.load("Resources/Sprites/red_paint.PNG").convert_alpha(), pos=(1078, 490), 
@@ -273,11 +275,13 @@ def shop(volume,music, current_cursor):
     purple_hammer = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor_purple.PNG").convert_alpha(), (320,180))
     pink_hammer = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor_pink.PNG").convert_alpha(), (320,180))
     black_hammer = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor_black.PNG").convert_alpha(), (320,180))
-    while True:    
-        screen.fill(black)
-        BG = transform.scale(pygame.image.load(resource_path("Resources/Backgrounds/BG_Shop.PNG")).convert(),GAME_SIZE)
-        screen.blit(BG, BG.get_rect(center = screen.get_rect().center)) 
 
+    screen.fill(black)
+    BG = transform.scale(pygame.image.load(resource_path("Resources/Backgrounds/BG_Shop.PNG")).convert(),GAME_SIZE)
+    screen.blit(BG, BG.get_rect(center = screen.get_rect().center)) 
+    screen.blit(speech_bubble, (800,270))
+
+    while True:    
         mousePos = pygame.mouse.get_pos()
 
         shop_text = buttonfont.render("Welcome to the shop!", True, black)
