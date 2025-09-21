@@ -29,7 +29,7 @@ red = (255,0,0)
 # create some fonts
 settingsfont = pygame.font.SysFont('helveticaneue', 24)
 #buttonfont = pygame.font.SysFont('helveticaneue',30)
-buttonfont = pygame.font.SysFont('boldpixels',40)
+buttonfont = pygame.font.SysFont('pixelsans',50)
 
 # Sounds we want to use
 pygame.mixer.init()
