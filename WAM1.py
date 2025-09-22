@@ -527,7 +527,7 @@ def play(volume,music, current_cursor):
         
     back_button = Button(transform.scale(pygame.image.load("Resources/Sprites/back_arrow.PNG").convert_alpha(),(68,68)), pos=(54, 118),
                              text_input="", font=buttonfont, base_color=black, hovering_color=red)
-    shop_button = Button(None, pos=(875, 850), 
+    shop_button = Button(None, pos=(890, 850), 
                          text_input="Shop", font=playfont, base_color=darkbrown, hovering_color=pink)
     start_button = Button(None, pos=(610, 850), 
                          text_input="Start", font=playfont, base_color=darkbrown, hovering_color=pink)
