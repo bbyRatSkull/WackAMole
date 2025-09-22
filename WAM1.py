@@ -301,19 +301,19 @@ def shop(volume,music, current_cursor):
         screen.blit(speech_bubble, (800,270))
         shop_text1 = shopfont.render(line1_text, True, darkbrown)
         shop_rect1 = shop_text1.get_rect(center=(640, 100))
-        screen.blit(shop_text1, (555+(shop_rect1[0]/2),285))
+        screen.blit(shop_text1, (552+(shop_rect1[0]/2),285))
 
         shop_text2 = shopfont.render(line2_text, True, darkbrown)
         shop_rect2 = shop_text2.get_rect(center=(640, 100))
-        screen.blit(shop_text2, (555+(shop_rect2[0]/2),310))
+        screen.blit(shop_text2, (552+(shop_rect2[0]/2),310))
 
         shop_text3 = shopfont.render(line3_text, True, darkbrown)
         shop_rect3 = shop_text3.get_rect(center=(640, 100))
-        screen.blit(shop_text3, (555+(shop_rect3[0])/2,335))
+        screen.blit(shop_text3, (552+(shop_rect3[0])/2,335))
 
         shop_text4 = shopfont.render(line4_text, True, darkbrown)
         shop_rect4 = shop_text4.get_rect(center=(640, 100))
-        screen.blit(shop_text4, (555+(shop_rect4[0]/2),360))
+        screen.blit(shop_text4, (552+(shop_rect4[0]/2),360))
 
         mousePos = pygame.mouse.get_pos()
 
@@ -350,13 +350,33 @@ def shop(volume,music, current_cursor):
                 if settings_button.checkForInput(mousePos):
                     volume, music, current_cursor= settings(volume, music, current_cursor)
                 if snow_power.checkForInput(mousePos):
-                    print("SNOW WORKS")
+                    item_clicked = True
+                    dialogue = False
+                    line1_text = "I so do love"
+                    line2_text = "the snow!"
+                    line3_text = "I'll trade you"
+                    line4_text = "six pies?"
                 if double_power.checkForInput(mousePos):
-                    print("DOUBLE WORKS")
+                    item_clicked = True
+                    dialogue = False
+                    line1_text = "It's like I'm"
+                    line2_text = "seeing double."
+                    line3_text = "I'll trade you"
+                    line4_text = "four pies?"
                 if hourglass_power.checkForInput(mousePos):
-                    print("PLACEHOLDER WORKS")
+                    item_clicked = True
+                    dialogue = False
+                    line1_text = "More time is"
+                    line2_text = "a luxury here."
+                    line3_text = "I'll trade you"
+                    line4_text = "three pies?"
                 if bell_power.checkForInput(mousePos):
-                    pass
+                    item_clicked = True
+                    dialogue = False
+                    line1_text = "A bell's not a"
+                    line2_text = "bell 'til it's rung."
+                    line3_text = "I'll trade you"
+                    line4_text = "two pies?"
 
                 if red_paint.checkForInput(mousePos):
                     item_clicked = True
@@ -438,16 +458,18 @@ def shop(volume,music, current_cursor):
 
                 if yes_button.checkForInput(mousePos):
                     current_cursor = pending_cursor
-                    line1_text = "Thanks!"
-                    line2_text = ""
-                    line3_text = ""
+                    line1_text = ""
+                    line2_text = "Alrighty roo!"
+                    line3_text = "Thank you!"
                     line4_text = ""
+                    item_clicked = False
                 if no_button.checkForInput(mousePos):
                     line1_text = "Oh, okay."
                     line2_text = "No problem,"
-                    line3_text = "dear."
+                    line3_text = "Dear."
                     line4_text = ""
                     pending_cursor = current_cursor
+                    item_clicked = False
         
         pygame.display.update()  
 
