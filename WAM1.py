@@ -27,9 +27,12 @@ darkblue = (0,0,139)
 red = (255,0,0)
 
 # create some fonts
-settingsfont = pygame.font.SysFont('helveticaneue', 24)
+settingsfont = pygame.font.SysFont('pixelsans', 38)
 #buttonfont = pygame.font.SysFont('helveticaneue',30)
-buttonfont = pygame.font.SysFont('pixelsans',50)
+buttonfont = pygame.font.SysFont('pixelsans',54)
+playfont = pygame.font.SysFont('pixelsans', 70)
+shopfont = pygame.font.SysFont('pixelsans', 35)
+timerfont = pygame.font.SysFont('vtf misterpixel', 50)
 
 # Sounds we want to use
 pygame.mixer.init()
@@ -131,9 +134,9 @@ def main_menu(volume, music, current_cursor): #the main menu screen
 
         mousePos = pygame.mouse.get_pos()
 
-        play_button = Button(None, pos=(431.7,612.025), 
+        play_button = Button(None, pos=(432,610), 
                              text_input="Play", font=buttonfont, base_color=darkbrown, hovering_color=pink)
-        quit_button = Button(None, pos=(1248.325, 744.8), 
+        quit_button = Button(None, pos=(1250, 742), 
                              text_input="Quit", font=buttonfont, base_color=darkbrown, hovering_color=pink)
         settings_button = Button(transform.scale(pygame.image.load(resource_path("Resources/Sprites/gear.PNG")).convert_alpha(),(50,50)), pos=(1458, 118),
                                  text_input="", font=buttonfont, base_color=white, hovering_color=white)
@@ -237,7 +240,7 @@ def settings(volume, music, current_cursor):
 def shop(volume,music, current_cursor):
     settings_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
                              text_input="", font=buttonfont, base_color=white, hovering_color=white)
-    back_button = Button(transform.scale(pygame.image.load("Resources/Sprites/back_arrow.PNG").convert_alpha(),(50,50)), pos=(54, 118),
+    back_button = Button(transform.scale(pygame.image.load("Resources/Sprites/back_arrow.PNG").convert_alpha(),(68,68)), pos=(54, 118),
                              text_input="", font=buttonfont, base_color=black, hovering_color=red)
     speech_bubble = pygame.image.load("Resources/Sprites/speech_bubble.PNG").convert_alpha()
         
@@ -279,19 +282,59 @@ def shop(volume,music, current_cursor):
     screen.fill(black)
     BG = transform.scale(pygame.image.load(resource_path("Resources/Backgrounds/BG_Shop.PNG")).convert(),GAME_SIZE)
     screen.blit(BG, BG.get_rect(center = screen.get_rect().center)) 
-    screen.blit(speech_bubble, (800,270))
+
+    line1_text = "Well hello!"
+    line2_text = "Welcome to"
+    line3_text = "my shop."
+    line4_text = ""
+
+    next_button = Button(None, pos=(944,438),
+                         text_input="Next", font=shopfont, base_color=darkbrown, hovering_color=pink)
+    yes_button = Button(None, pos=(944,438),
+                         text_input="Yes", font=shopfont, base_color=darkbrown, hovering_color=pink)
+    no_button = Button(None, pos=(855,438),
+                         text_input="No", font=shopfont, base_color=darkbrown, hovering_color=pink)   
+    dialogue = True
+    item_clicked = False
 
     while True:    
-        mousePos = pygame.mouse.get_pos()
+        screen.blit(speech_bubble, (800,270))
+        shop_text1 = shopfont.render(line1_text, True, darkbrown)
+        shop_rect1 = shop_text1.get_rect(center=(640, 100))
+        screen.blit(shop_text1, (555+(shop_rect1[0]/2),285))
 
-        shop_text = buttonfont.render("Welcome to the shop!", True, black)
-        shop_rect = shop_text.get_rect(center=(640, 100))
-        screen.blit(shop_text, shop_rect)
+        shop_text2 = shopfont.render(line2_text, True, darkbrown)
+        shop_rect2 = shop_text2.get_rect(center=(640, 100))
+        screen.blit(shop_text2, (555+(shop_rect2[0]/2),310))
+
+        shop_text3 = shopfont.render(line3_text, True, darkbrown)
+        shop_rect3 = shop_text3.get_rect(center=(640, 100))
+        screen.blit(shop_text3, (555+(shop_rect3[0])/2,335))
+
+        shop_text4 = shopfont.render(line4_text, True, darkbrown)
+        shop_rect4 = shop_text4.get_rect(center=(640, 100))
+        screen.blit(shop_text4, (555+(shop_rect4[0]/2),360))
+
+        mousePos = pygame.mouse.get_pos()
 
         for button in [back_button, settings_button, snow_power, double_power, hourglass_power, bell_power,
                        red_paint, orange_paint, green_paint, teal_paint, blue_paint, purple_paint, pink_paint, black_paint]:
             button.changeColor(mousePos)
             button.update(screen)
+        if dialogue:
+            for button in [next_button]:
+                button.changeColor(mousePos)
+                button.update(screen)
+                no_button.enabled = False
+                yes_button.enabled = False
+        elif not item_clicked:
+            for button in [no_button, yes_button, next_button]:
+                button.enabled = False
+        if item_clicked: 
+            for button in [no_button, yes_button]:
+                button.enabled = True
+                button.changeColor(mousePos)
+                button.update(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -316,21 +359,95 @@ def shop(volume,music, current_cursor):
                     pass
 
                 if red_paint.checkForInput(mousePos):
-                    current_cursor = red_hammer
+                    item_clicked = True
+                    dialogue = False
+                    line1_text = "Nice! That's"
+                    line2_text = "red paint."
+                    line3_text = "I'll trade you"
+                    line4_text = "one pie?"
+                    pending_cursor = red_hammer
                 if orange_paint.checkForInput(mousePos):
-                    current_cursor = orange_hammer
+                    item_clicked = True
+                    dialogue = False
+                    line1_text = "Nice! That's"
+                    line2_text = "orange paint."
+                    line3_text = "I'll trade you"
+                    line4_text = "one pie?"
+                    pending_cursor = orange_hammer
                 if green_paint.checkForInput(mousePos):
-                    current_cursor = green_hammer
+                    item_clicked = True
+                    dialogue = False
+                    line1_text = "Nice! That's"
+                    line2_text = "green paint."
+                    line3_text = "I'll trade you"
+                    line4_text = "one pie?"
+                    pending_cursor = green_hammer
                 if teal_paint.checkForInput(mousePos):
-                    current_cursor = teal_hammer
+                    item_clicked = True
+                    dialogue = False
+                    line1_text = "Nice! That's"
+                    line2_text = "teal paint."
+                    line3_text = "I'll trade you"
+                    line4_text = "one pie?"
+                    pending_cursor = teal_hammer
                 if blue_paint.checkForInput(mousePos):
-                    current_cursor = blue_hammer
+                    item_clicked = True
+                    dialogue = False
+                    line1_text = "Nice! That's"
+                    line2_text = "blue paint."
+                    line3_text = "I'll trade you"
+                    line4_text = "one pie?"
+                    pending_cursor = blue_hammer
                 if purple_paint.checkForInput(mousePos):
-                    current_cursor = purple_hammer
+                    item_clicked = True
+                    dialogue = False
+                    line1_text = "Nice! That's"
+                    line2_text = "purple paint."
+                    line3_text = "I'll trade you"
+                    line4_text = "one pie?"
+                    pending_cursor = purple_hammer
                 if pink_paint.checkForInput(mousePos):
-                    current_cursor = pink_hammer
+                    item_clicked = True
+                    dialogue = False
+                    line1_text = "Nice! That's"
+                    line2_text = "pink paint."
+                    line3_text = "I'll trade you"
+                    line4_text = "one pie?"
+                    pending_cursor = pink_hammer
                 if black_paint.checkForInput(mousePos):
-                    current_cursor = black_hammer
+                    item_clicked = True
+                    dialogue = False
+                    line1_text = "Nice! That's"
+                    line2_text = "black paint."
+                    line3_text = "I'll trade you"
+                    line4_text = "one pie?"
+                    pending_cursor = black_hammer
+
+                if next_button.checkForInput(mousePos):
+                    if line1_text == "Well hello!":
+                        line1_text = "Just call me"
+                        line2_text = "Granny Plum."
+                        line3_text = "It's very nice"
+                        line4_text = "to see you!"
+                    elif line1_text == "Just call me":
+                        line1_text = "Do you"
+                        line2_text = "see anything"
+                        line3_text = "that you like?"
+                        line4_text = ""
+                        dialogue = False
+
+                if yes_button.checkForInput(mousePos):
+                    current_cursor = pending_cursor
+                    line1_text = "Thanks!"
+                    line2_text = ""
+                    line3_text = ""
+                    line4_text = ""
+                if no_button.checkForInput(mousePos):
+                    line1_text = "Oh, okay."
+                    line2_text = "No problem,"
+                    line3_text = "dear."
+                    line4_text = ""
+                    pending_cursor = current_cursor
         
         pygame.display.update()  
 
@@ -385,13 +502,13 @@ def play(volume,music, current_cursor):
     for i in range(9):
         moles[i].image = moleabsent
         moles[i].status = 'absent'
-
-    menu_button = Button(None, pos=(100, 118), 
-                         text_input="Main Menu", font=buttonfont, base_color=white, hovering_color=white)
-    shop_button = Button(None, pos=(800, 830), 
-                         text_input="Shop", font=buttonfont, base_color=darkbrown, hovering_color=pink)
-    start_button = Button(None, pos=(550, 830), 
-                         text_input="Start", font=buttonfont, base_color=darkbrown, hovering_color=pink)
+        
+    back_button = Button(transform.scale(pygame.image.load("Resources/Sprites/back_arrow.PNG").convert_alpha(),(68,68)), pos=(54, 118),
+                             text_input="", font=buttonfont, base_color=black, hovering_color=red)
+    shop_button = Button(None, pos=(875, 850), 
+                         text_input="Shop", font=playfont, base_color=darkbrown, hovering_color=pink)
+    start_button = Button(None, pos=(610, 850), 
+                         text_input="Start", font=playfont, base_color=darkbrown, hovering_color=pink)
     settings_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
                          text_input="", font=buttonfont, base_color=white, hovering_color=white)
     
@@ -459,7 +576,7 @@ def play(volume,music, current_cursor):
                             moles[i].image = moleabsent
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if menu_button.checkForInput(mousePos):
+                if back_button.checkForInput(mousePos):
                     gameStarted = False
                     for i in range(9):
                         moles[i].image = moleabsent
@@ -538,9 +655,7 @@ def play(volume,music, current_cursor):
             allmoles.draw(screen)
 
             if gameStarted:
-
-            # currently, these buttons are OVER the cursor... ?? 
-                for button in [menu_button, settings_button, snow_power, double_power, bell_power, hourglass_power]:
+                for button in [back_button, settings_button, snow_power, double_power, bell_power, hourglass_power]:
                     button.changeColor(mousePos)
                     button.update(screen)
                 for button in [shop_button, start_button]:
@@ -555,11 +670,10 @@ def play(volume,music, current_cursor):
                 if len(seconds) < 2:
                     seconds = "0" + seconds
                     
-                timerText = buttonfont.render(minutes + ":" + seconds, True, black, pink)
+                timerText = timerfont.render(minutes + ":" + seconds, True, white, None)
                 timerRect = timerText.get_rect()
                 timerRect.center = (150, 600)
-                pygame.draw.rect(screen, pink, timerRect)
-                screen.blit(timerText, timerRect)
+                screen.blit(timerText, (756-timerRect[0],68))
             
                 jar = update_jar(score)
                 screen.blit(jar, (1350, 740))
@@ -583,7 +697,7 @@ def play(volume,music, current_cursor):
             else: 
                 pygame.mouse.set_visible(True)
 
-                for button in [menu_button, shop_button, start_button, settings_button]:
+                for button in [back_button, shop_button, start_button, settings_button]:
                     button.changeColor(mousePos)
                     button.update(screen)
                 for button in [shop_button, start_button]:
