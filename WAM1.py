@@ -124,7 +124,7 @@ def intro_sequence():
     intro_resized = intro.resize(newsize=(1504, 846))
     intro_resized.preview(fullscreen=True)
 
-def main_menu(volume, music, current_cursor): #the main menu screen
+def main_menu(volume, music, current_cursor, inventory): #the main menu screen
     while True:
         screen.fill(black)
         # loads in image and scales it to screen size
@@ -155,16 +155,16 @@ def main_menu(volume, music, current_cursor): #the main menu screen
                     sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button.checkForInput(mousePos):
-                    volume, music = tutorial(volume,music, current_cursor)
+                    volume, music = tutorial(volume,music, current_cursor, inventory)
                 if settings_button.checkForInput(mousePos):
-                    volume, music, current_cursor= settings(volume, music, current_cursor)
+                    volume, music, current_cursor= settings(volume, music, current_cursor, inventory)
                 if quit_button.checkForInput(mousePos):
                     pygame.quit()
                     sys.exit()
 
         pygame.display.update()  
 
-def settings(volume, music, current_cursor):
+def settings(volume, music, current_cursor, inventory):
     BG = transform.scale(pygame.image.load("Resources/Backgrounds/overlay.PNG").convert_alpha(),GAME_SIZE)
     screen.blit(BG, BG.get_rect(center = screen.get_rect().center))
 
@@ -227,17 +227,17 @@ def settings(volume, music, current_cursor):
                         music = False
                         music_button.image = music_off_image
                 if tutorial_button.checkForInput(mousePos):
-                    volume, music, current_cursor = tutorial(volume,music, current_cursor)
+                    volume, music, current_cursor = tutorial(volume,music, current_cursor, inventory)
                     return volume, music, current_cursor
                 if intro_button.checkForInput(mousePos):
                     intro_sequence()
-                    main_menu(volume, music, current_cursor)
+                    main_menu(volume, music, current_cursor, inventory)
                 if back_button.checkForInput(mousePos):
                     return volume, music
 
         pygame.display.update()  
 
-def shop(volume,music, current_cursor):
+def shop(volume,music, current_cursor, inventory):
     settings_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
                              text_input="", font=buttonfont, base_color=white, hovering_color=white)
     back_button = Button(transform.scale(pygame.image.load("Resources/Sprites/back_arrow.PNG").convert_alpha(),(68,68)), pos=(54, 118),
@@ -296,6 +296,9 @@ def shop(volume,music, current_cursor):
                          text_input="No", font=shopfont, base_color=darkbrown, hovering_color=pink)   
     dialogue = True
     item_clicked = False
+    current_power = None
+    pending_cursor = None
+    cost = 1000
 
     while True:    
         screen.blit(speech_bubble, (800,270))
@@ -345,10 +348,10 @@ def shop(volume,music, current_cursor):
                     return volume, music, current_cursor
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mousePos):
-                    volume, music, current_cursor = play(volume, music, current_cursor)
+                    volume, music, current_cursor = play(volume, music, current_cursor, inventory)
 
                 if settings_button.checkForInput(mousePos):
-                    volume, music, current_cursor= settings(volume, music, current_cursor)
+                    volume, music, current_cursor= settings(volume, music, current_cursor, inventory)
                 if snow_power.checkForInput(mousePos):
                     item_clicked = True
                     dialogue = False
@@ -356,6 +359,8 @@ def shop(volume,music, current_cursor):
                     line2_text = "the snow!"
                     line3_text = "I'll trade you"
                     line4_text = "six pies?"
+                    current_power = "snow"
+                    cost = 6
                 if double_power.checkForInput(mousePos):
                     item_clicked = True
                     dialogue = False
@@ -363,6 +368,8 @@ def shop(volume,music, current_cursor):
                     line2_text = "seeing double."
                     line3_text = "I'll trade you"
                     line4_text = "four pies?"
+                    current_power = "double"
+                    cost = 4
                 if hourglass_power.checkForInput(mousePos):
                     item_clicked = True
                     dialogue = False
@@ -370,6 +377,8 @@ def shop(volume,music, current_cursor):
                     line2_text = "a luxury here."
                     line3_text = "I'll trade you"
                     line4_text = "three pies?"
+                    current_power = "hourglass"
+                    cost = 3
                 if bell_power.checkForInput(mousePos):
                     item_clicked = True
                     dialogue = False
@@ -377,6 +386,8 @@ def shop(volume,music, current_cursor):
                     line2_text = "bell 'til it's rung."
                     line3_text = "I'll trade you"
                     line4_text = "two pies?"
+                    current_power = "bell"
+                    cost = 2
 
                 if red_paint.checkForInput(mousePos):
                     item_clicked = True
@@ -386,6 +397,7 @@ def shop(volume,music, current_cursor):
                     line3_text = "I'll trade you"
                     line4_text = "one pie?"
                     pending_cursor = red_hammer
+                    cost = 1
                 if orange_paint.checkForInput(mousePos):
                     item_clicked = True
                     dialogue = False
@@ -394,6 +406,7 @@ def shop(volume,music, current_cursor):
                     line3_text = "I'll trade you"
                     line4_text = "one pie?"
                     pending_cursor = orange_hammer
+                    cost = 1
                 if green_paint.checkForInput(mousePos):
                     item_clicked = True
                     dialogue = False
@@ -402,6 +415,7 @@ def shop(volume,music, current_cursor):
                     line3_text = "I'll trade you"
                     line4_text = "one pie?"
                     pending_cursor = green_hammer
+                    cost = 1
                 if teal_paint.checkForInput(mousePos):
                     item_clicked = True
                     dialogue = False
@@ -410,6 +424,7 @@ def shop(volume,music, current_cursor):
                     line3_text = "I'll trade you"
                     line4_text = "one pie?"
                     pending_cursor = teal_hammer
+                    cost = 1
                 if blue_paint.checkForInput(mousePos):
                     item_clicked = True
                     dialogue = False
@@ -418,6 +433,7 @@ def shop(volume,music, current_cursor):
                     line3_text = "I'll trade you"
                     line4_text = "one pie?"
                     pending_cursor = blue_hammer
+                    cost = 1
                 if purple_paint.checkForInput(mousePos):
                     item_clicked = True
                     dialogue = False
@@ -426,6 +442,7 @@ def shop(volume,music, current_cursor):
                     line3_text = "I'll trade you"
                     line4_text = "one pie?"
                     pending_cursor = purple_hammer
+                    cost = 1
                 if pink_paint.checkForInput(mousePos):
                     item_clicked = True
                     dialogue = False
@@ -434,6 +451,7 @@ def shop(volume,music, current_cursor):
                     line3_text = "I'll trade you"
                     line4_text = "one pie?"
                     pending_cursor = pink_hammer
+                    cost = 1
                 if black_paint.checkForInput(mousePos):
                     item_clicked = True
                     dialogue = False
@@ -442,6 +460,7 @@ def shop(volume,music, current_cursor):
                     line3_text = "I'll trade you"
                     line4_text = "one pie?"
                     pending_cursor = black_hammer
+                    cost = 1
 
                 if next_button.checkForInput(mousePos):
                     if line1_text == "Well hello!":
@@ -457,12 +476,35 @@ def shop(volume,music, current_cursor):
                         dialogue = False
 
                 if yes_button.checkForInput(mousePos):
-                    current_cursor = pending_cursor
-                    line1_text = ""
-                    line2_text = "Alrighty roo!"
-                    line3_text = "Thank you!"
-                    line4_text = ""
-                    item_clicked = False
+                    if pending_cursor is not None and inventory[0][1] >= cost:
+                        current_cursor = pending_cursor
+                        inventory[0][1] -= cost
+                        line1_text = ""
+                        line2_text = "Alrighty roo!"
+                        line3_text = "Thank you!"
+                        line4_text = ""
+                        item_clicked = False
+                        pending_cursor = None
+                    elif current_power is not None and inventory[0][1] >= cost:
+                        inventory[0][1] -= cost
+                        for item in inventory:
+                            if item[0] == current_power:
+                                i = inventory.index(item)
+                                inventory[i][1] += 1
+                        line1_text = ""
+                        line2_text = "Alrighty roo!"
+                        line3_text = "Thank you!"
+                        line4_text = ""
+                        item_clicked = False
+                        current_power = None
+                    else: 
+                        line1_text = "Oh, I'm sorry."
+                        line2_text = "You don't have"
+                        line3_text = "enough for"
+                        line4_text = "that, Dear."
+                        item_clicked = False
+                        current_power = None
+                        pending_cursor = None
                 if no_button.checkForInput(mousePos):
                     line1_text = "Oh, okay."
                     line2_text = "No problem,"
@@ -470,10 +512,12 @@ def shop(volume,music, current_cursor):
                     line4_text = ""
                     pending_cursor = current_cursor
                     item_clicked = False
+                    current_power = None
+                    pending_cursor = None
         
         pygame.display.update()  
 
-def tutorial(volume,music, current_cursor):
+def tutorial(volume,music, current_cursor, inventory):
     while True:
         screen.fill(lightblue)
 
@@ -503,13 +547,13 @@ def tutorial(volume,music, current_cursor):
                     return volume, music
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if menu_button.checkForInput(mousePos):
-                    main_menu(volume, music, current_cursor)
+                    main_menu(volume, music, current_cursor, inventory)
                 if skip_tutorial_button.checkForInput(mousePos):
-                    volume, music = play(volume,music, current_cursor)
+                    volume, music = play(volume,music, current_cursor, inventory)
 
         pygame.display.update()
 
-def play(volume,music, current_cursor):
+def play(volume,music, current_cursor, inventory):
     gameStarted = False
     gameCompleted = False
 
@@ -558,7 +602,7 @@ def play(volume,music, current_cursor):
                     gameCompleted = True
                     gameover.play()
                     pygame.mouse.set_visible(True)
-                    main_menu(volume, music, current_cursor)
+                    main_menu(volume, music, current_cursor, inventory)
 
             # find mouse position
             mousePos = pygame.mouse.get_pos()
@@ -606,12 +650,12 @@ def play(volume,music, current_cursor):
                     gameCompleted = True
                     gameover.play()
                     pygame.mouse.set_visible(True)
-                    main_menu(volume, music, current_cursor)
+                    main_menu(volume, music, current_cursor, inventory)
                 if shop_button.checkForInput(mousePos):
-                    volume, music, current_cursor = shop(volume,music, current_cursor)
+                    volume, music, current_cursor = shop(volume,music, current_cursor, inventory)
                 if settings_button.checkForInput(mousePos):
                     pygame.mouse.set_visible(True)
-                    volume, music, current_cursor = settings(volume, music, current_cursor)
+                    volume, music, current_cursor = settings(volume, music, current_cursor, inventory)
                     pygame.mouse.set_visible(False)
                 if start_button.checkForInput(mousePos):
                     gameStarted = True
@@ -621,24 +665,32 @@ def play(volume,music, current_cursor):
                     cursor_image = current_cursor
                     cursor_rect = cursor_image.get_rect()
                 if bell_power.checkForInput(mousePos):
-                    aliveodds = 1
-                    absentodds = 10
+                    if inventory[1][1] > 0:
+                        inventory[1][1] -= 1
+                        aliveodds = 1
+                        absentodds = 10
                 if hourglass_power.checkForInput(mousePos):
-                    secondsRemaining += 20
-                    if doubling is True:
-                        time_added += 20
+                    if inventory[2][1] > 0:
+                        inventory[2][1] -= 1
+                        secondsRemaining += 20
+                        if doubling is True:
+                            time_added += 20
                 if double_power.checkForInput(mousePos):
-                    doubling = True
-                    time_at_double = secondsRemaining
+                    if inventory[3][1] > 0:
+                        inventory[3][1] -= 1
+                        doubling = True
+                        time_at_double = secondsRemaining
 
                 if snow_power.checkForInput(mousePos):
-                    for i in range(9):
-                        if moles[i].status == "alive":
-                            if moles[i].image == molealive_s:
-                                moles[i].image = molefrozen_s
-                            else:
-                                moles[i].image = molefrozen_b
-                            moles[i].status = 'frozen'
+                    if inventory[4][1] > 0:
+                        inventory[4][1] -= 1
+                        for i in range(9):
+                            if moles[i].status == "alive":
+                                if moles[i].image == molealive_s:
+                                    moles[i].image = molefrozen_s
+                                else:
+                                    moles[i].image = molefrozen_b
+                                moles[i].status = 'frozen'
 
                 if gameStarted:
                     for i in range(9):
@@ -730,6 +782,7 @@ def play(volume,music, current_cursor):
                 if gameCompleted:
                     print("the game finished")
                     game_finished(volume, music, current_cursor, score)
+                    inventory[0][1] += score // 2
                     gameCompleted = False
 
 
@@ -748,7 +801,7 @@ def game_finished(volume, music, current_cursor, score):
         #screen.blit(BG, BG.get_rect(center = screen.get_rect().center))
 
         # create some text
-        headerText = buttonfont.render("This is your score" + str(score), True, black, pink)
+        headerText = buttonfont.render("This is your score" + str(score) + "pies:" + str(score // 2), True, black, pink)
         headerRect = headerText.get_rect(center=(350,50))
         screen.blit(headerText, headerRect)
 
@@ -782,4 +835,4 @@ def game_finished(volume, music, current_cursor, score):
 intro_sequence()
 # maybe have it play a 7 sec empty audio then restart the previosuly playing aufio that way
 # it doesnt overlap music sewuence and sfx
-main_menu(volume= True, music= True, current_cursor=current_cursor)
+main_menu(volume= True, music= True, current_cursor=current_cursor, inventory = [["pies", 0],["bell", 0],["hourglass", 0],["double", 0],["snow", 0]])
