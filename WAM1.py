@@ -87,7 +87,7 @@ moles[8] = Mole(1207, 328) #top 5
 allmoles = Group(moles)
 
 # for timing
-framerate = 1000  # you can modify to adjust speed of animation, 1 second = 1000 milliseconds
+framerate = 1000  # you can modify to adjust speed of animation, 1 second = 1000 milliseconds (low=fast)
 TIMEREVENT = pygame.USEREVENT + 1
 pygame.time.set_timer(TIMEREVENT, framerate)
 
@@ -559,7 +559,7 @@ def play(volume,music, current_cursor, inventory):
 
     aliveodds = 10
     absentodds = 3
-    rabbitodds = 8
+    rabbitodds = 7
 
     time_added = 0
     doubling = False
@@ -727,7 +727,6 @@ def play(volume,music, current_cursor, inventory):
                                     heart2 = False
                                 elif heart3: 
                                     heart3 = False
-                                else: 
                                     gameStarted = False
                                     score = -9999
                                     for i in range(9):
@@ -794,7 +793,7 @@ def play(volume,music, current_cursor, inventory):
                 cursor_rect.center = pygame.mouse.get_pos()
                 screen.blit(cursor_image, (cursor_rect[0] + 138, cursor_rect[1]-2))
 
-                if secondsRemaining < 0:
+                if secondsRemaining == 0:
                     gameStarted = False
                     for i in range(9):
                         moles[i].image = moleabsent
