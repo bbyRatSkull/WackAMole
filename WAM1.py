@@ -559,7 +559,7 @@ def play(volume,music, current_cursor, inventory):
 
     aliveodds = 10
     absentodds = 3
-    rabbitodds = 10
+    rabbitodds = 8
 
     time_added = 0
     doubling = False
@@ -586,6 +586,9 @@ def play(volume,music, current_cursor, inventory):
                          text_input=None, font=buttonfont, base_color=black, hovering_color=red)
     hourglass_power = Button(transform.scale(pygame.image.load("Resources/Sprites/hourglass.PNG").convert_alpha(),(96,96)), pos=(690, 860), 
                          text_input=None, font=buttonfont, base_color=black, hovering_color=red)
+    
+    heart_full = transform.scale(image.load(resource_path("Resources/Sprites/heart_full.PNG")).convert_alpha(), (50, 50))
+    heart_empty = transform.scale(image.load(resource_path("Resources/Sprites/heart_empty.PNG")).convert_alpha(), (50, 50))
 
     while True:
         snow_text = shopfont.render(str(inventory[4][1]), True, darkbrown)
@@ -664,6 +667,9 @@ def play(volume,music, current_cursor, inventory):
                     pygame.mouse.set_visible(False)
                 if start_button.checkForInput(mousePos):
                     gameStarted = True
+                    heart1 = True
+                    heart2 = True
+                    heart3 = True
                     secondsRemaining = 60
                     score = 0
                     pygame.mouse.set_visible(False)
@@ -715,6 +721,23 @@ def play(volume,music, current_cursor, inventory):
                                 moles[i].image = moles[i].dead_image
                                 moles[i].status = 'dead'
                                 buzzer.play()
+                                if heart1: 
+                                    heart1 = False
+                                elif heart2: 
+                                    heart2 = False
+                                elif heart3: 
+                                    heart3 = False
+                                else: 
+                                    gameStarted = False
+                                    score = -9999
+                                    for i in range(9):
+                                        moles[i].image = moleabsent
+                                        moles[i].status = 'absent'
+                                    gameCompleted = True
+                                    gameover.play()
+                                    pygame.mouse.set_cursor(pygame.cursors.Cursor())
+                                    
+
                                 if doubling is True:
                                     score -= 1
                                 score -= 1
@@ -746,6 +769,13 @@ def play(volume,music, current_cursor, inventory):
                 screen.blit(double_text, (880, 805))
                 screen.blit(snow_text, (1004, 805))
 
+                if heart1: screen.blit(heart_full, (255, 850))
+                else: screen.blit(heart_empty, (255, 850))
+                if heart2 : screen.blit(heart_full, (315, 850))
+                else: screen.blit(heart_empty, (315, 850))
+                if heart3 : screen.blit(heart_full, (375, 850))
+                else: screen.blit(heart_empty, (375, 850))
+
                 minutes = str(secondsRemaining // 60)
                 seconds = str(secondsRemaining % 60)
                 if len(minutes) < 2:
@@ -771,7 +801,7 @@ def play(volume,music, current_cursor, inventory):
                         moles[i].status = 'absent'
                     gameCompleted = True
                     gameover.play()
-                    #idk if this nect line is needed
+                    #idk if this next line is needed
                     pygame.mouse.set_cursor(pygame.cursors.Cursor())
             
                 if time_at_double - 10 + time_added == secondsRemaining:
@@ -791,7 +821,6 @@ def play(volume,music, current_cursor, inventory):
                 if gameCompleted:
                     print("the game finished")
                     game_finished(volume, music, current_cursor, inventory, score)
-                    inventory[0][1] += score // 2
                     gameCompleted = False
 
 
@@ -808,6 +837,17 @@ def game_finished(volume, music, current_cursor, inventory, score):
         #BG = transform.scale(pygame.image.load("Resources/Backgrounds/BG_Score.PNG").convert(),GAME_SIZE)
         # blits the image to the center of the surface "screen"
         #screen.blit(BG, BG.get_rect(center = screen.get_rect().center))
+
+        if score > 0:
+            inventory[0][1] += score // 2
+        elif score != -9999:
+            score = 0
+            #better luck next time
+            pass
+        else:
+            #bad ending, hit rabbits to get here
+            pass
+
 
         # create some text
         headerText = buttonfont.render("This is your score" + str(score) + "pies:" + str(score // 2), True, black, pink)
