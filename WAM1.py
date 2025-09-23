@@ -157,7 +157,7 @@ def main_menu(volume, music, current_cursor, inventory): #the main menu screen
                 if play_button.checkForInput(mousePos):
                     volume, music = tutorial(volume,music, current_cursor, inventory)
                 if settings_button.checkForInput(mousePos):
-                    volume, music, current_cursor= settings(volume, music, current_cursor, inventory)
+                    volume, music, current_cursor, inventory = settings(volume, music, current_cursor, inventory)
                 if quit_button.checkForInput(mousePos):
                     pygame.quit()
                     sys.exit()
@@ -227,13 +227,13 @@ def settings(volume, music, current_cursor, inventory):
                         music = False
                         music_button.image = music_off_image
                 if tutorial_button.checkForInput(mousePos):
-                    volume, music, current_cursor = tutorial(volume,music, current_cursor, inventory)
-                    return volume, music, current_cursor
+                    volume, music, current_cursor, inventory = tutorial(volume,music, current_cursor, inventory)
+                    return volume, music, current_cursor, inventory
                 if intro_button.checkForInput(mousePos):
                     intro_sequence()
                     main_menu(volume, music, current_cursor, inventory)
                 if back_button.checkForInput(mousePos):
-                    return volume, music
+                    return volume, music, current_cursor, inventory
 
         pygame.display.update()  
 
@@ -345,13 +345,13 @@ def shop(volume,music, current_cursor, inventory):
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == K_ESCAPE:
-                    return volume, music, current_cursor
+                    return volume, music, current_cursor, inventory
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mousePos):
-                    volume, music, current_cursor = play(volume, music, current_cursor, inventory)
+                    volume, music, current_cursor, inventory = play(volume, music, current_cursor, inventory)
 
                 if settings_button.checkForInput(mousePos):
-                    volume, music, current_cursor= settings(volume, music, current_cursor, inventory)
+                    volume, music, current_cursor, inventory = settings(volume, music, current_cursor, inventory)
                 if snow_power.checkForInput(mousePos):
                     item_clicked = True
                     dialogue = False
@@ -588,6 +588,11 @@ def play(volume,music, current_cursor, inventory):
                          text_input=None, font=buttonfont, base_color=black, hovering_color=red)
 
     while True:
+        snow_text = shopfont.render(str(inventory[4][1]), True, darkbrown)
+        double_text = shopfont.render(str(inventory[3][1]), True, darkbrown)
+        bell_text = shopfont.render(str(inventory[1][1]), True, darkbrown)
+        hourglass_text = shopfont.render(str(inventory[2][1]), True, darkbrown)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -652,10 +657,10 @@ def play(volume,music, current_cursor, inventory):
                     pygame.mouse.set_visible(True)
                     main_menu(volume, music, current_cursor, inventory)
                 if shop_button.checkForInput(mousePos):
-                    volume, music, current_cursor = shop(volume,music, current_cursor, inventory)
+                    volume, music, current_cursor, inventory = shop(volume,music, current_cursor, inventory)
                 if settings_button.checkForInput(mousePos):
                     pygame.mouse.set_visible(True)
-                    volume, music, current_cursor = settings(volume, music, current_cursor, inventory)
+                    volume, music, current_cursor, inventory = settings(volume, music, current_cursor, inventory)
                     pygame.mouse.set_visible(False)
                 if start_button.checkForInput(mousePos):
                     gameStarted = True
@@ -736,6 +741,10 @@ def play(volume,music, current_cursor, inventory):
                     button.enabled = False
                 for button in [bell_power, hourglass_power, double_power, snow_power]:
                     button.enabled = True
+                screen.blit(bell_text, (580, 805))
+                screen.blit(hourglass_text, (730, 805))
+                screen.blit(double_text, (880, 805))
+                screen.blit(snow_text, (1004, 805))
 
                 minutes = str(secondsRemaining // 60)
                 seconds = str(secondsRemaining % 60)
@@ -781,7 +790,7 @@ def play(volume,music, current_cursor, inventory):
 
                 if gameCompleted:
                     print("the game finished")
-                    game_finished(volume, music, current_cursor, score)
+                    game_finished(volume, music, current_cursor, inventory, score)
                     inventory[0][1] += score // 2
                     gameCompleted = False
 
@@ -789,7 +798,7 @@ def play(volume,music, current_cursor, inventory):
 
         pygame.display.update()
 
-def game_finished(volume, music, current_cursor, score):
+def game_finished(volume, music, current_cursor, inventory, score):
     while True:
         mousePos = pygame.mouse.get_pos()
 
@@ -825,7 +834,7 @@ def game_finished(volume, music, current_cursor, score):
             
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if menu_button.checkForInput(mousePos):
-                    main_menu(volume, music, current_cursor)
+                    main_menu(volume, music, current_cursor, inventory)
                 if continue_button.checkForInput(mousePos):
                     return
 
@@ -835,4 +844,6 @@ def game_finished(volume, music, current_cursor, score):
 intro_sequence()
 # maybe have it play a 7 sec empty audio then restart the previosuly playing aufio that way
 # it doesnt overlap music sewuence and sfx
-main_menu(volume= True, music= True, current_cursor=current_cursor, inventory = [["pies", 0],["bell", 0],["hourglass", 0],["double", 0],["snow", 0]])
+
+# For demo purposes, pies is set to 20
+main_menu(volume= True, music= True, current_cursor=current_cursor, inventory = [["pies", 20],["bell", 0],["hourglass", 0],["double", 0],["snow", 0]])
