@@ -245,6 +245,13 @@ def shop(volume,music, current_cursor, inventory):
                              text_input="", font=buttonfont, base_color=white, hovering_color=white)
     back_button = Button(transform.scale(pygame.image.load("Resources/Sprites/back_arrow.PNG").convert_alpha(),(68,68)), pos=(54, 118),
                              text_input="", font=buttonfont, base_color=black, hovering_color=orange)
+    next_button = Button(transform.scale(pygame.image.load("Resources/Sprites/next_arrow.PNG").convert_alpha(),(50,50)), pos=(944,438),
+                         text_input="", font=shopfont, base_color=darkbrown, hovering_color=pink)
+    yes_button = Button(transform.scale(pygame.image.load("Resources/Sprites/yes.PNG").convert_alpha(),(50,50)), pos=(944,438),
+                         text_input="", font=shopfont, base_color=darkbrown, hovering_color=pink)
+    no_button = Button(transform.scale(pygame.image.load("Resources/Sprites/no.PNG").convert_alpha(),(50,50)), pos=(855,438),
+                         text_input="", font=shopfont, base_color=darkbrown, hovering_color=pink)   
+
     speech_bubble = pygame.image.load("Resources/Sprites/speech_bubble.PNG").convert_alpha()
         
     snow_power = Button(pygame.image.load("Resources/Sprites/snow_shop.PNG").convert_alpha(), pos=(587, 549), 
@@ -289,13 +296,6 @@ def shop(volume,music, current_cursor, inventory):
     line2_text = "Welcome to"
     line3_text = "my shop."
     line4_text = ""
-
-    next_button = Button(None, pos=(944,438),
-                         text_input="Next", font=shopfont, base_color=darkbrown, hovering_color=pink)
-    yes_button = Button(None, pos=(944,438),
-                         text_input="Yes", font=shopfont, base_color=darkbrown, hovering_color=pink)
-    no_button = Button(None, pos=(855,438),
-                         text_input="No", font=shopfont, base_color=darkbrown, hovering_color=pink)   
     dialogue = True
     item_clicked = False
     current_power = None
@@ -858,7 +858,6 @@ def play(volume,music, current_cursor, inventory):
                     button.enabled = False
 
                 if gameCompleted:
-                    print("the game finished")
                     game_finished(volume, music, current_cursor, inventory, score)
                     gameCompleted = False
 
@@ -867,36 +866,27 @@ def play(volume,music, current_cursor, inventory):
         pygame.display.update()
 
 def game_finished(volume, music, current_cursor, inventory, score):
+    pie_image = transform.scale(pygame.image.load("Resources/Sprites/pie.PNG").convert_alpha(), (125,125))
+    pie_positions = [(55, 430), (180, 430), (305, 430), (430, 430), (55, 266), (180, 266), (305, 266), (430, 266)]
+    pies_earned = score // 4
     if score > 0:
-        inventory[0][1] += score // 2
-    elif score != -9999:
-        score = 0
-        #better luck next time
-        pass
-    else:
-        #bad ending, hit rabbits to get here
-        pass
+        inventory[0][1] += pies_earned
+
+    screen.fill(black)
+    # loads in image and scales it to screen size
+    BG = transform.scale(pygame.image.load("Resources/Backgrounds/BG_Final.PNG").convert(),GAME_SIZE)
+    OVERLAY = transform.scale(pygame.image.load("Resources/Backgrounds/overlay.PNG").convert_alpha(),GAME_SIZE)
+
+    menu_button = Button(None, pos=(100, 118), 
+                 text_input="Main Menu", font=buttonfont, base_color=white, hovering_color=white)
+    continue_button = Button(None, pos=(700, 650), 
+                 text_input="Continue", font=buttonfont, base_color=black, hovering_color=orange)
 
     while True:
         mousePos = pygame.mouse.get_pos()
 
-        screen.fill(black)
-        # loads in image and scales it to screen size
-        screen.fill(pink)
-        #BG = transform.scale(pygame.image.load("Resources/Backgrounds/BG_Score.PNG").convert(),GAME_SIZE)
         # blits the image to the center of the surface "screen"
-        #screen.blit(BG, BG.get_rect(center = screen.get_rect().center))
-
-
-        # create some text
-        headerText = buttonfont.render("This is your score" + str(score) + "pies:" + str(score // 2), True, black, pink)
-        headerRect = headerText.get_rect(center=(350,50))
-        screen.blit(headerText, headerRect)
-
-        menu_button = Button(None, pos=(100, 118), 
-                    text_input="Main Menu", font=buttonfont, base_color=white, hovering_color=white)
-        continue_button = Button(None, pos=(700, 650), 
-                         text_input="Continue", font=buttonfont, base_color=black, hovering_color=orange)
+        screen.blit(BG, BG.get_rect(center = screen.get_rect().center))
 
         for button in [menu_button, continue_button]:
             button.changeColor(mousePos)
@@ -916,9 +906,43 @@ def game_finished(volume, music, current_cursor, inventory, score):
                     main_menu(volume, music, current_cursor, inventory)
                 if continue_button.checkForInput(mousePos):
                     return
+        
+        if pies_earned > 0:
+            for i in range(pies_earned):
+                if i == 8:
+                    break
+                screen.blit(pie_image, pie_positions[i])
+            
+            text = buttonfont.render("Good job! You collected enough", True, black, pink)
+            rect = text.get_rect(center=(350,50))
+            screen.blit(text, rect)
+            text2 = buttonfont.render("jam to make " + str(pies_earned) + " pies.", True, black, pink)
+            rect2 = text2.get_rect(center=(350,100))
+            screen.blit(text2, rect2)
+            if pies_earned > 8:
+                text3 = buttonfont.render("You even ran out of room with that many!", True, black, pink)
+                rect3 = text3.get_rect(center=(350,150))
+                screen.blit(text3, rect3)
+
+        elif score > -9999:
+            #better luck next time
+            text = buttonfont.render("Awe, looks like you couldn't get enough jam for a pie.", True, black, pink)
+            rect = text.get_rect(center=(350,50))
+            screen.blit(text, rect)
+            text2 = buttonfont.render("Better luck next time.", True, black, pink)
+            rect2 = text2.get_rect(center=(350,100))
+            screen.blit(text2, rect2)
+        else:
+            screen.blit(OVERLAY, OVERLAY.get_rect(center = screen.get_rect().center))
+            #bad ending, hit rabbits to get here
+            text = buttonfont.render("Oh no! Poor snowdrop!", True, black, pink)
+            rect = text.get_rect(center=(350,50))
+            screen.blit(text, rect)
+            text2 = buttonfont.render("Be more careful not to hit her next time.", True, black, pink)
+            rect2 = text2.get_rect(center=(350,100))
+            screen.blit(text2, rect2)
 
         pygame.display.update()
-
 
 intro_sequence()
 # maybe have it play a 7 sec empty audio then restart the previosuly playing aufio that way
