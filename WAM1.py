@@ -866,11 +866,16 @@ def play(volume,music, current_cursor, inventory):
         pygame.display.update()
 
 def game_finished(volume, music, current_cursor, inventory, score):
+    current_input = ""
+    asking = False
+    
     pie_image = transform.scale(pygame.image.load("Resources/Sprites/pie.PNG").convert_alpha(), (125,125))
     pie_positions = [(55, 430), (180, 430), (305, 430), (430, 430), (55, 266), (180, 266), (305, 266), (430, 266)]
     pies_earned = score // 4
     if score > 0:
         inventory[0][1] += pies_earned
+    if pies_earned > 0:
+        asking = True
 
     screen.fill(black)
     # loads in image and scales it to screen size
@@ -881,12 +886,33 @@ def game_finished(volume, music, current_cursor, inventory, score):
                  text_input="Main Menu", font=buttonfont, base_color=white, hovering_color=white)
     continue_button = Button(None, pos=(700, 650), 
                  text_input="Continue", font=buttonfont, base_color=black, hovering_color=orange)
+    
+    line1_text = ""
+    line2_text = ""
+    line3_text = ""
+
+    highscores = []
+    with open("Resources/highscores.txt", "r") as file:
+        for line in file:
+            (name, round_score) = line.strip().split(": ")
+            highscores.append((name, round_score))
+    highscore1 = highscores[0]
+    highscore2 = highscores[1]
+    highscore3 = highscores[2]
+    highscore4 = highscores[3]
+    highscore5 = highscores[4]
 
     while True:
         mousePos = pygame.mouse.get_pos()
 
-        # blits the image to the center of the surface "screen"
         screen.blit(BG, BG.get_rect(center = screen.get_rect().center))
+
+        prompt = shopfont.render("Enter your initials:", True, darkbrown)
+        input_box = shopfont.render(current_input, True, darkblue)
+
+        if asking:
+            screen.blit(prompt, (500, 500))
+            screen.blit(input_box, (500, 550))
 
         for button in [menu_button, continue_button]:
             button.changeColor(mousePos)
@@ -906,43 +932,94 @@ def game_finished(volume, music, current_cursor, inventory, score):
                     main_menu(volume, music, current_cursor, inventory)
                 if continue_button.checkForInput(mousePos):
                     return
+                
+            #for typing
+            if event.type == pygame.KEYDOWN and asking:
+                #if enter is clicked, save name and score
+                if event.key == pygame.K_RETURN:
+                    with open("Resources/highscores.txt", "a") as file:
+                        file.write(f"{current_input}: {int(score)}\n")
+                    print(f"Saved: {current_input} - {int(score)}")
+                    asking = False
+                    #resort highscores
+                    manage_highscores()
+                    #grab the new top scores
+                    highscores = []
+                    with open("Resources/highscores.txt", "r") as file:
+                        for line in file:
+                            (name, round_score) = line.strip().split(": ")
+                            highscores.append((name, round_score))
+                    highscore1 = highscores[0]
+                    highscore2 = highscores[1]
+                    highscore3 = highscores[2]
+                    highscore4 = highscores[3]
+                    highscore5 = highscores[4]
+
+                elif event.key == pygame.K_BACKSPACE:
+                    current_input = current_input[:-1]
+                else:
+                    if len(current_input) < 3:  #limit to 3 intials only
+                        current_input += event.unicode
         
         if pies_earned > 0:
             for i in range(pies_earned):
                 if i == 8:
                     break
                 screen.blit(pie_image, pie_positions[i])
-            
-            text = buttonfont.render("Good job! You collected enough", True, black, pink)
-            rect = text.get_rect(center=(350,50))
-            screen.blit(text, rect)
-            text2 = buttonfont.render("jam to make " + str(pies_earned) + " pies.", True, black, pink)
-            rect2 = text2.get_rect(center=(350,100))
-            screen.blit(text2, rect2)
-            if pies_earned > 8:
-                text3 = buttonfont.render("You even ran out of room with that many!", True, black, pink)
-                rect3 = text3.get_rect(center=(350,150))
-                screen.blit(text3, rect3)
 
-        elif score > -9999:
+            if pies_earned > 8:
+                line1_text = "Good job! You collected enough"
+                line2_text = "jam to make " + str(pies_earned) + " pies."
+                line3_text = "You even ran out of room with that many!"
+
+        elif score > -9990:
             #better luck next time
-            text = buttonfont.render("Awe, looks like you couldn't get enough jam for a pie.", True, black, pink)
-            rect = text.get_rect(center=(350,50))
-            screen.blit(text, rect)
-            text2 = buttonfont.render("Better luck next time.", True, black, pink)
-            rect2 = text2.get_rect(center=(350,100))
-            screen.blit(text2, rect2)
+            line1_text = "Awe, looks like you couldn't get enough jam for a pie."
+            line2_text = "Better luck next time."
         else:
             screen.blit(OVERLAY, OVERLAY.get_rect(center = screen.get_rect().center))
             #bad ending, hit rabbits to get here
-            text = buttonfont.render("Oh no! Poor snowdrop!", True, black, pink)
-            rect = text.get_rect(center=(350,50))
-            screen.blit(text, rect)
-            text2 = buttonfont.render("Be more careful not to hit her next time.", True, black, pink)
-            rect2 = text2.get_rect(center=(350,100))
-            screen.blit(text2, rect2)
+            line1_text = "Oh no! Poor snowdrop!"
+            line2_text = "Be more careful not to hit her next time."
+        
+        text = buttonfont.render(line1_text, True, darkbrown)
+        screen.blit(text, (350,50))
+        text2 = buttonfont.render(line2_text, True, darkbrown)
+        screen.blit(text2, (350,100))
+        text3 = buttonfont.render(line3_text, True, darkbrown)
+        screen.blit(text3, (350,150))
+
+        scores_line1 = buttonfont.render(highscore1[0] + "   " + highscore1[1], True, darkbrown)
+        scores_line2 = buttonfont.render(highscore2[0] + "   " + highscore2[1], True, darkbrown)
+        scores_line3 = buttonfont.render(highscore3[0] + "   " + highscore3[1], True, darkbrown)
+        scores_line4 = buttonfont.render(highscore4[0] + "   " + highscore4[1], True, darkbrown)
+        scores_line5 = buttonfont.render(highscore5[0] + "   " + highscore5[1], True, darkbrown)
+        screen.blit(scores_line1, (750,450))
+        screen.blit(scores_line2, (750,550))
+        screen.blit(scores_line3, (750,650))
+        screen.blit(scores_line4, (750,750))
+        screen.blit(scores_line5, (750,850))
 
         pygame.display.update()
+
+def manage_highscores():
+    highscores = []
+    #read in existing scores
+    with open("Resources/highscores.txt", "r") as file:
+        for line in file:
+            entry = line.strip().split(": ")
+            name = entry[0]
+            score = int(entry[1])
+            highscores.append((name, score))
+
+    top_scores = sorted(highscores, key=lambda x: x[1], reverse=True)[:5]
+
+    #rewrite top 5 to file
+    with open("Resources/highscores.txt", "w") as file:
+        for entry in top_scores:
+            file.write(f"{entry[0]}: {entry[1]}\n")
+
+game_finished(volume= True, music= True, current_cursor=current_cursor, inventory = [["pies", 20],["bell", 0],["hourglass", 0],["double", 1],["snow", 0]], score=46)
 
 intro_sequence()
 # maybe have it play a 7 sec empty audio then restart the previosuly playing aufio that way

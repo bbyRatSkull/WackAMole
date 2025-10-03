@@ -1,5 +1,5 @@
 ('/Users/Alyssa/Desktop/CSC/User Interface - 319/WackAMole/build/WAM1/WAM1',
- False,
+ True,
  False,
  True,
  ['/Users/Alyssa/Desktop/CSC/User Interface - 319/WackAMole/logo.icns'],
@@ -64,8 +64,8 @@
  [],
  False,
  False,
- 1758639713,
- [('runw',
-   '/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/PyInstaller/bootloader/Darwin-64bit/runw',
+ 1759535641,
+ [('run',
+   '/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/PyInstaller/bootloader/Darwin-64bit/run',
    'EXECUTABLE')],
  '/Library/Frameworks/Python.framework/Versions/3.11/Python')
