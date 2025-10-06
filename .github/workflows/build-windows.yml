@@ -26,10 +26,10 @@ jobs:
         pip install pygame pyinstaller
 
     - name: Build the EXE
-      run: pyinstaller --onefile WAM1.py
+      run: pyinstaller --windowed --icon=logo.icns --add-data "Resources:Resources" WAM1.py
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: your-game-exe
-        path: dist/your_script.exe
+        path: dist/WAM1.exe
