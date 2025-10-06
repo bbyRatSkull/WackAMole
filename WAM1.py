@@ -7,6 +7,8 @@ import pygame, sys, os
 from pygame.locals import *
 from button import Button
 import moviepy.editor
+import os
+import os.path
 
 # need for making .exe later
 def resource_path(relative_path):
@@ -891,16 +893,44 @@ def game_finished(volume, music, current_cursor, inventory, score):
     line2_text = ""
     line3_text = ""
 
+    #gets the user's home directory. works on macOS, Linux, Windows
+    home_dir = os.path.expanduser("~")
+    #creates a path to the folder the txt file will go in
+    folder_path = os.path.join(home_dir, "WackAMole", "highscores.txt")
+    #creates the directory for the folder if it does not already exist
+    os.makedirs(folder_path, exist_ok=True)
+    #defined the path to the txt file
+    file_path = os.path.join(folder_path, "highscores.txt")
+
     highscores = []
-    with open("Resources/highscores.txt", "r") as file:
-        for line in file:
-            (name, round_score) = line.strip().split(": ")
-            highscores.append((name, round_score))
-    highscore1 = highscores[0]
-    highscore2 = highscores[1]
-    highscore3 = highscores[2]
-    highscore4 = highscores[3]
-    highscore5 = highscores[4]
+    try: #will work if the file exists/ has been written in
+        with open(file_path, "r") as file:
+            for line in file:
+                (name, round_score) = line.strip().split(": ")
+                highscores.append((name, round_score))
+        highscore1 = highscores[0]
+        highscore2 = highscores[1]
+        highscore3 = highscores[2]
+        highscore4 = highscores[3]
+        highscore5 = highscores[4]
+    except Exception: #will run if the file has not been written in yet
+        #this writes in 0 scores for all 5 possible highscores. Will overwrite data in the file
+        with open(file_path, "w") as file:
+            file.write("000: 000\n")
+            file.write("000: 000\n")
+            file.write("000: 000\n")
+            file.write("000: 000\n")
+            file.write("000: 000\n")
+        #same code as above, will correctly run this time
+        with open(file_path, "r") as file:
+            for line in file:
+                (name, round_score) = line.strip().split(": ")
+                highscores.append((name, round_score))
+        highscore1 = highscores[0]
+        highscore2 = highscores[1]
+        highscore3 = highscores[2]
+        highscore4 = highscores[3]
+        highscore5 = highscores[4]
 
     while True:
         mousePos = pygame.mouse.get_pos()
@@ -932,20 +962,21 @@ def game_finished(volume, music, current_cursor, inventory, score):
                     main_menu(volume, music, current_cursor, inventory)
                 if continue_button.checkForInput(mousePos):
                     return
-                
+            
+            # maybe only do this is their score is able to be a highscore
             #for typing
             if event.type == pygame.KEYDOWN and asking:
                 #if enter is clicked, save name and score
                 if event.key == pygame.K_RETURN:
-                    with open("Resources/highscores.txt", "a") as file:
+                    with open(file_path, "a") as file:
                         file.write(f"{current_input}: {int(score)}\n")
                     print(f"Saved: {current_input} - {int(score)}")
                     asking = False
                     #resort highscores
-                    manage_highscores()
+                    manage_highscores(file_path)
                     #grab the new top scores
                     highscores = []
-                    with open("Resources/highscores.txt", "r") as file:
+                    with open(file_path, "r") as file:
                         for line in file:
                             (name, round_score) = line.strip().split(": ")
                             highscores.append((name, round_score))
@@ -1002,10 +1033,10 @@ def game_finished(volume, music, current_cursor, inventory, score):
 
         pygame.display.update()
 
-def manage_highscores():
+def manage_highscores(file_path):
     highscores = []
     #read in existing scores
-    with open("Resources/highscores.txt", "r") as file:
+    with open(file_path, "r") as file:
         for line in file:
             entry = line.strip().split(": ")
             name = entry[0]
@@ -1015,7 +1046,7 @@ def manage_highscores():
     top_scores = sorted(highscores, key=lambda x: x[1], reverse=True)[:5]
 
     #rewrite top 5 to file
-    with open("Resources/highscores.txt", "w") as file:
+    with open(file_path, "w") as file:
         for entry in top_scores:
             file.write(f"{entry[0]}: {entry[1]}\n")
 
