@@ -26,6 +26,7 @@ white = (255,255,255)
 black = (0, 0, 0)
 lightblue = (30,144,255)
 darkblue = (0,0,139)
+darkgreen = (38, 133, 76)
 orange = (222, 93, 58)
 yellow = (243, 168, 51)
 
@@ -36,6 +37,7 @@ playfont = pygame.font.SysFont('pixelsans', 70)
 shopfont = pygame.font.SysFont('pixelsans', 35)
 timerfont = pygame.font.SysFont('vtf misterpixel', 50)
 timerfont_bigger = pygame.font.SysFont('vtf misterpixel', 54)
+initialsfont = pygame.font.SysFont('vtf misterpixel', 35)
 
 # Sounds we want to use
 pygame.mixer.init()
@@ -586,7 +588,7 @@ def play(volume,music, current_cursor, inventory):
                          text_input="Shop", font=playfont, base_color=darkbrown, hovering_color=pink)
     start_button = Button(None, pos=(610, 850), 
                          text_input="Start", font=playfont, base_color=darkbrown, hovering_color=pink)
-    mode_button = Button(None, pos=(750, 890), 
+    mode_button = Button(None, pos=(730, 890), 
                          text_input="Hard Mode =", font=settingsfont, base_color=darkbrown, hovering_color=pink)
     settings_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
                          text_input="", font=buttonfont, base_color=white, hovering_color=white)
@@ -614,8 +616,7 @@ def play(volume,music, current_cursor, inventory):
         bell_text = shopfont.render(str(inventory[1][1]), True, darkbrown)
         hourglass_text = shopfont.render(str(inventory[2][1]), True, darkbrown)
 
-        mode_text = shopfont.render(mode_string, True, darkbrown)
-        screen.blit(mode_text, (750, 880))
+        mode_text = settingsfont.render(mode_string, True, darkbrown)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -707,7 +708,7 @@ def play(volume,music, current_cursor, inventory):
                     heart1 = True
                     heart2 = True
                     heart3 = True
-                    secondsRemaining = 60
+                    secondsRemaining = 5
                     score = 0
                     pygame.mouse.set_visible(False)
                     cursor_image = current_cursor
@@ -854,10 +855,11 @@ def play(volume,music, current_cursor, inventory):
                 for button in [back_button, shop_button, start_button, settings_button, mode_button]:
                     button.changeColor(mousePos)
                     button.update(screen)
-                for button in [shop_button, start_button]:
+                for button in [back_button, shop_button, start_button, settings_button, mode_button]:
                     button.enabled = True
                 for button in [bell_power, hourglass_power, double_power, snow_power]:
                     button.enabled = False
+                screen.blit(mode_text, (802, 872))
 
                 if gameCompleted:
                     game_finished(volume, music, current_cursor, inventory, score)
@@ -902,35 +904,27 @@ def game_finished(volume, music, current_cursor, inventory, score):
     #defined the path to the txt file
     file_path = os.path.join(folder_path, "highscores.txt")
 
-    highscores = []
+    highscores = [x for x in range(5)]
     try: #will work if the file exists/ has been written in
         with open(file_path, "r") as file:
+            x = -1
             for line in file:
+                x += 1
                 (name, round_score) = line.strip().split(": ")
-                highscores.append((name, round_score))
-        highscore1 = highscores[0]
-        highscore2 = highscores[1]
-        highscore3 = highscores[2]
-        highscore4 = highscores[3]
-        highscore5 = highscores[4]
+                highscores[x] = (name, round_score)
+
     except Exception: #will run if the file has not been written in yet
         #this writes in 0 scores for all 5 possible highscores. Will overwrite data in the file
         with open(file_path, "w") as file:
-            file.write("000: 000\n")
-            file.write("000: 000\n")
-            file.write("000: 000\n")
-            file.write("000: 000\n")
-            file.write("000: 000\n")
+            for i in range(5):
+                file.write("000: 000\n")
         #same code as above, will correctly run this time
         with open(file_path, "r") as file:
+            x = -1
             for line in file:
+                x += 1
                 (name, round_score) = line.strip().split(": ")
-                highscores.append((name, round_score))
-        highscore1 = highscores[0]
-        highscore2 = highscores[1]
-        highscore3 = highscores[2]
-        highscore4 = highscores[3]
-        highscore5 = highscores[4]
+                highscores[x] = (name, round_score)
 
     while True:
         mousePos = pygame.mouse.get_pos()
@@ -941,8 +935,8 @@ def game_finished(volume, music, current_cursor, inventory, score):
         input_box = shopfont.render(current_input, True, darkblue)
 
         if asking:
-            screen.blit(prompt, (500, 500))
-            screen.blit(input_box, (500, 550))
+            screen.blit(prompt, (978, 490))
+            screen.blit(input_box, (978, 530))
 
         for button in [menu_button, continue_button]:
             button.changeColor(mousePos)
@@ -969,28 +963,24 @@ def game_finished(volume, music, current_cursor, inventory, score):
                 #if enter is clicked, save name and score
                 if event.key == pygame.K_RETURN:
                     with open(file_path, "a") as file:
-                        file.write(f"{current_input}: {int(score)}\n")
-                    print(f"Saved: {current_input} - {int(score)}")
+                        file.write(f"{current_input}: {int(pies_earned)}\n")
+                    print(f"Saved: {current_input} - {int(pies_earned)}")
                     asking = False
                     #resort highscores
                     manage_highscores(file_path)
                     #grab the new top scores
-                    highscores = []
                     with open(file_path, "r") as file:
+                        x = -1
                         for line in file:
+                            x += 1
                             (name, round_score) = line.strip().split(": ")
-                            highscores.append((name, round_score))
-                    highscore1 = highscores[0]
-                    highscore2 = highscores[1]
-                    highscore3 = highscores[2]
-                    highscore4 = highscores[3]
-                    highscore5 = highscores[4]
+                            highscores[x] = (name, round_score)
 
                 elif event.key == pygame.K_BACKSPACE:
                     current_input = current_input[:-1]
                 else:
                     if len(current_input) < 3:  #limit to 3 intials only
-                        current_input += event.unicode
+                        current_input += event.unicode.upper()
         
         if pies_earned > 0:
             for i in range(pies_earned):
@@ -1019,17 +1009,37 @@ def game_finished(volume, music, current_cursor, inventory, score):
         screen.blit(text2, (350,100))
         text3 = buttonfont.render(line3_text, True, darkbrown)
         screen.blit(text3, (350,150))
+        names_lines = [["","",""] for x in range(5)]
+        scores_lines = [["","",""] for x in range(5)]
+        #currently does work for one two or three digits of score, will not do the same for initials. 
+        #maybe hard lock in the initials in the above bit where theire typing it
+        for i in range(5):
+            try:
+                for j in range(3):
+                    names_lines[i][j] = initialsfont.render(highscores[i][0][j])
+                    screen.blit(names_lines[i][j], (1229+(j*15), 375+(i*40)))
+                    scores_lines[i][j] = initialsfont.render(highscores[i][1][j])
+                    screen.blit(scores_lines[i][j], (1360+(j*15), 375+(i*40)))
+            except Exception:
+                pass
+            try:
 
-        scores_line1 = buttonfont.render(highscore1[0] + "   " + highscore1[1], True, darkbrown)
-        scores_line2 = buttonfont.render(highscore2[0] + "   " + highscore2[1], True, darkbrown)
-        scores_line3 = buttonfont.render(highscore3[0] + "   " + highscore3[1], True, darkbrown)
-        scores_line4 = buttonfont.render(highscore4[0] + "   " + highscore4[1], True, darkbrown)
-        scores_line5 = buttonfont.render(highscore5[0] + "   " + highscore5[1], True, darkbrown)
-        screen.blit(scores_line1, (750,450))
-        screen.blit(scores_line2, (750,550))
-        screen.blit(scores_line3, (750,650))
-        screen.blit(scores_line4, (750,750))
-        screen.blit(scores_line5, (750,850))
+
+                names_lines[i] = initialsfont.render(highscores[i][0][0] + "   " + highscores[i][0][1] + "   " + highscores[i][0][2], True, darkgreen)
+                scores_lines[i] = initialsfont.render(highscores[i][1][0] + "   " + highscores[i][1][1] + "   " + highscores[i][1][2], True, darkgreen)
+                screen.blit(names_lines[i], (1229, 375+(i*40)))
+                screen.blit(scores_lines[i], (1360, 375+(i*40)))
+            except Exception:
+                try:
+                    names_lines[i] = initialsfont.render(highscores[i][0][0] + "   " + highscores[i][0][1] + "   " + highscores[i][0][2], True, darkgreen)
+                    scores_lines[i] = initialsfont.render(highscores[i][1][0] + "   " + highscores[i][1][1], True, darkgreen)
+                    screen.blit(names_lines[i], (1229, 375+(i*40)))
+                    screen.blit(scores_lines[i], (1360, 375+(i*40)))
+                except Exception:
+                    names_lines[i] = initialsfont.render(highscores[i][0][0] + "   " + highscores[i][0][1] + "   " + highscores[i][0][2], True, darkgreen)
+                    scores_lines[i] = initialsfont.render(highscores[i][1][0], True, darkgreen)
+                    screen.blit(names_lines[i], (1229, 375+(i*40)))
+                    screen.blit(scores_lines[i], (1360, 375+(i*40)))
 
         pygame.display.update()
 
