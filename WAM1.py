@@ -1,11 +1,12 @@
 # Started on AUG 2025
+# Finished the current state on OCT 8 2025
+# Made by BabyRatSkull aka Alyssa
 import random
 from pygame import *
-from pygame.font import Font
 from pygame.sprite import *
 import pygame, sys, os
 from pygame.locals import *
-from button import Button
+from button import Button #class made and published by someone else
 import moviepy.editor
 import os
 import os.path
@@ -40,7 +41,7 @@ timerfont = pygame.font.SysFont('vtf misterpixel', 50)
 timerfont_bigger = pygame.font.SysFont('vtf misterpixel', 54)
 initialsfont = pygame.font.SysFont('vtf misterpixel', 32)
 
-#sound and chennels can be initialized here
+#sound and channels can be initialized here
 #sounds themselves are defined in the function they wil be used in
 #...this is so they do not play in slow motion :D
 pygame.mixer.init()
@@ -51,6 +52,7 @@ pygame.init()
 screenvar = pygame.display.get_desktop_sizes()
 screen = pygame.display.set_mode((screenvar[0][0], screenvar[0][1]), FULLSCREEN)
 #the screen ratio all object are placed to match / the base state
+#the game will NOT look the same on a different screen ratio! All elements are placed by pixel
 GAME_SIZE = (1504,846)
 pygame.display.set_caption("Whack a Mole!")
 
@@ -121,7 +123,7 @@ def intro_sequence():
 def main_menu(volume, music, current_cursor, inventory): #the main menu screen
     base_music = pygame.mixer.Sound(resource_path('Resources/Audio/cute_creatures.mp3'))
     base_music.set_volume(0.5)
-    if music_channel.get_busy() is False and music is True:
+    if not music_channel.get_busy() and music:
         music_channel.play(base_music, -1)
     while True:
         screen.fill(black)
@@ -191,9 +193,9 @@ def settings(volume, music, current_cursor, inventory):
 
         #trying to get an image to appear behind the buttons
         #screen.blit(myimage, (1458, 118))
-        if volume is False:
+        if not volume:
             volume_button.image = volume_off_image
-        if music is False:
+        if not music:
             music_button.image = music_off_image
 
         for button in [volume_button, music_button, tutorial_button, intro_button, back_button]:
@@ -209,7 +211,7 @@ def settings(volume, music, current_cursor, inventory):
                     return volume, music, current_cursor, inventory
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if volume_button.checkForInput(mousePos):
-                    if volume is False:
+                    if not volume:
                         volume = True
                         volume_button.image = volume_on_image
                         sfx_channel.unpause()
@@ -219,7 +221,7 @@ def settings(volume, music, current_cursor, inventory):
                         sfx_channel.pause()
                     volume_button.update(screen)
                 if music_button.checkForInput(mousePos):
-                    if music is False:
+                    if not music:
                         music = True
                         music_button.image = music_on_image
                         music_channel.unpause()
@@ -617,7 +619,7 @@ def play(volume,music, current_cursor, inventory):
     play_music.set_volume(0.7)
     base_music = pygame.mixer.Sound(resource_path('Resources/Audio/cute_creatures.mp3'))
     base_music.set_volume(0.5)
-    if music_channel.get_busy() is False and music is True:
+    if not music_channel.get_busy() and music:
         music_channel.play(base_music, -1)
 
     # loads in image and scales it to screen size
@@ -638,7 +640,7 @@ def play(volume,music, current_cursor, inventory):
             if event.type == pygame.KEYDOWN:
                 if event.key == K_ESCAPE:
                     if gameStarted:
-                        if volume is True:
+                        if volume:
                             sfx_channel.play(gameover)
                         gameStarted = False
                         for i in range(9):
@@ -646,7 +648,7 @@ def play(volume,music, current_cursor, inventory):
                             moles[i].status = 'absent'
                     gameCompleted = False
                     pygame.mouse.set_visible(True)
-                    if music is True:
+                    if music:
                         music_channel.play(base_music)
                     main_menu(volume, music, current_cursor, inventory)
 
@@ -699,15 +701,17 @@ def play(volume,music, current_cursor, inventory):
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mousePos):
                     if gameStarted:
-                        if volume is True:
+                        if volume:
                             sfx_channel.play(gameover)
+                        if music:
+                            music_channel.play(base_music)
                         for i in range(9):
                             moles[i].image = moleabsent
                             moles[i].status = 'absent'
                         gameStarted = False
                     gameCompleted = False
                     pygame.mouse.set_visible(True)
-                    if music is True:
+                    if music and not music_channel.get_busy():
                         music_channel.play(base_music)
                     main_menu(volume, music, current_cursor, inventory)
                 if shop_button.checkForInput(mousePos):
@@ -733,27 +737,30 @@ def play(volume,music, current_cursor, inventory):
                     pygame.mouse.set_visible(False)
                     cursor_image = current_cursor
                     cursor_rect = cursor_image.get_rect()
-                    if music is True:
+                    if music:
                         music_channel.play(play_music, -1)
                 if bell_power.checkForInput(mousePos):
                     if inventory[1][1] > 0:
                         inventory[1][1] -= 1
                         aliveodds = 1
                         absentodds = 10
-                        sfx_channel.play(bell)
+                        if volume:
+                            sfx_channel.play(bell)
                 if hourglass_power.checkForInput(mousePos):
                     if inventory[2][1] > 0:
                         inventory[2][1] -= 1
-                        secondsRemaining += 20
-                        if doubling is True:
-                            time_added += 20
-                        sfx_channel.play(sand)
+                        secondsRemaining += 10
+                        if doubling:
+                            time_added += 10
+                        if volume:
+                            sfx_channel.play(sand)
                 if double_power.checkForInput(mousePos):
                     if inventory[3][1] > 0:
                         inventory[3][1] -= 1
                         doubling = True
                         time_at_double = secondsRemaining
-                    sfx_channel.play(power_up)
+                        if volume:
+                            sfx_channel.play(power_up)
                 if snow_power.checkForInput(mousePos):
                     if inventory[4][1] > 0:
                         inventory[4][1] -= 1
@@ -764,25 +771,25 @@ def play(volume,music, current_cursor, inventory):
                                 else:
                                     moles[i].image = molefrozen_b
                                 moles[i].status = 'frozen'
-                        sfx_channel.play(icy)
+                        if volume:
+                            sfx_channel.play(icy)
 
                 if gameStarted:
-                    if music is True and music_channel.get_busy() is False:
+                    if music and not music_channel.get_busy():
                         music_channel.play(play_music, -1)
                     for i in range(9):
                         if mousex >= moles[i].x and mousex <= moles[i].x + 225.6 and \
                             mousey >= moles[i].y and mousey <= moles[i].y + 225.6:
                             if moles[i].status == 'alive' or moles[i].status == 'frozen':
-                                if volume is True:
+                                if volume:
                                     sfx_channel.play(bonk)
                                 moles[i].image = moles[i].dead_image
                                 moles[i].status = 'dead'
-                                if doubling is True:
-                                    score += 1
-                                    if hardmode is True:
-                                        score += 1
-                                score += 1
-                                if hardmode is True:
+                                if doubling and hardmode:
+                                    score += 4
+                                elif doubling or hardmode:
+                                    score += 2
+                                else:
                                     score += 1
                                 if aliveodds == 1:
                                     aliveodds = 10
@@ -790,7 +797,7 @@ def play(volume,music, current_cursor, inventory):
                             elif moles[i].status == 'rabbitalive':
                                 moles[i].image = moles[i].dead_image
                                 moles[i].status = 'dead'
-                                if volume is True:
+                                if volume:
                                     sfx_channel.play(buzzer)
                                 if heart1: 
                                     heart1 = False
@@ -804,28 +811,26 @@ def play(volume,music, current_cursor, inventory):
                                         moles[i].image = moleabsent
                                         moles[i].status = 'absent'
                                     gameCompleted = True
-                                    if volume is True:
+                                    if volume:
                                         sfx_channel.play(gameover)
                                     pygame.mouse.set_cursor(pygame.cursors.Cursor())
                                     
-                                if doubling is True:
-                                    if hardmode is True:
-                                        score -= 1
+                                if doubling and hardmode:
+                                    score -= 4
+                                elif doubling or hardmode:
+                                    score -= 2
+                                else:
                                     score -= 1
-                                if hardmode is True:
-                                    score -= 1
-                                score -= 1
                             else:
                                 moles[i].image = moleabsent
-                                if volume is True:
+                                if volume:
                                     sfx_channel.play(buzzer)
-                                if doubling is True:
-                                    if hardmode is True:
-                                        score -= 1
+                                if doubling and hardmode:
+                                    score -= 4
+                                elif doubling or hardmode:
+                                    score -= 2
+                                else:
                                     score -= 1
-                                if hardmode is True:
-                                    score -= 1
-                                score -= 1
             
             #This has to be here, not sure why, but now it doesnt "glitch"
             screen.fill(black)
@@ -903,7 +908,7 @@ def play(volume,music, current_cursor, inventory):
                 screen.blit(mode_text, (803, 872))
 
                 if gameCompleted:
-                    if volume is True:
+                    if volume:
                         sfx_channel.play(gameover)
                     game_finished(volume, music, current_cursor, inventory, score)
                     gameCompleted = False
@@ -927,7 +932,7 @@ def game_finished(volume, music, current_cursor, inventory, score):
     kitchen_music.set_volume(0.9)
     base_music = pygame.mixer.Sound(resource_path('Resources/Audio/cute_creatures.mp3'))
     base_music.set_volume(0.5)
-    if music is True:
+    if music:
         music_channel.play(kitchen_music, -1)
 
     screen.fill(black)
@@ -964,7 +969,7 @@ def game_finished(volume, music, current_cursor, inventory, score):
         with open(file_path, "w") as file:
             for i in range(4):
                 file.write("000: 000\n")
-        #same code as above, will correctly run this time
+        #same code as above, will correctly run this time since the file has been created
         with open(file_path, "r") as file:
             x = -1
             for line in file:
@@ -972,7 +977,7 @@ def game_finished(volume, music, current_cursor, inventory, score):
                 (name, round_score) = line.strip().split(": ")
                 highscores[x] = (name, round_score)
 
-    if pies_earned > 0 and pies_earned > int(highscores[3][1]):
+    if pies_earned > 0 and pies_earned > int(highscores[3][1]): #if a pie was earned and their score is eligible for highscores
         asking = True
         did_ask = True
 
@@ -998,18 +1003,17 @@ def game_finished(volume, music, current_cursor, inventory, score):
 
             if event.type == pygame.KEYDOWN:
                 if event.key == K_ESCAPE:
-                    if music is True:
+                    if music:
                         music_channel.play(base_music)
                     return
             
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if continue_button.checkForInput(mousePos):
-                    if music is True:
+                    if music:
                         music_channel.play(base_music)
                     return
             
-            # maybe only do this is their score is able to be a highscore
-            #for typing
+            #for typing and showing results in the 'input_box'
             if event.type == pygame.KEYDOWN and asking:
                 #if enter is clicked, save name and score
                 if event.key == pygame.K_RETURN:
@@ -1032,14 +1036,17 @@ def game_finished(volume, music, current_cursor, inventory, score):
                             x += 1
                             (name, round_score) = line.strip().split(": ")
                             highscores[x] = (name, round_score)
-
+                #if backspace is pressed, get rid of the last item inputted
                 elif event.key == pygame.K_BACKSPACE:
                     current_input = current_input[:-1]
+                #happens on any other key press
                 else:
                     if len(current_input) < 3:  #limit to 3 intials only
                         current_input += event.unicode.upper()
-        
+
         if pies_earned > 0:
+            #blits pies to the screen until the 8th pie (if appliciable) is blitted
+            #then it breaks out/stops
             for i in range(pies_earned):
                 if i == 8:
                     break
@@ -1053,11 +1060,11 @@ def game_finished(volume, music, current_cursor, inventory, score):
                 line2_text = "Mmm. Smells yummy!"
 
         elif score > -9990:
-            #better luck next time
+            #no pies earned
             line1_text = "Awe, looks like you couldn't get enough jam for a pie."
             line2_text = "Better luck next time."
         else:
-            #bad ending, hit rabbits to get here
+            #hit 3 rabbits and failed the round
             line1_text = "Oh no! Poor snowdrop!"
             line2_text = "Be more careful not to hit her next time."
         
@@ -1067,40 +1074,28 @@ def game_finished(volume, music, current_cursor, inventory, score):
         screen.blit(text2, (658,165))
         text4 = shopfont.render("Most Pies Baked", True, grey)
         screen.blit(text4, (1240, 315))
+
+        #in range(4) because we're only blitting the top 4 high scores
         names_lines = [["","",""] for x in range(4)]
         scores_lines = [0 for x in range(4)]
-        #currently does work for one two or three digits of score, will not do the same for initials. 
-        #maybe hard lock in the initials in the above bit where theire typing it
         for i in range(4):
             screen.blit(initialsfont.render(":", True, darkgreen), (1355, 378+(i*40)))
+            names_lines[i][0] = initialsfont.render(highscores[i][0][0], True, darkgreen) #first inital
+            names_lines[i][1] = initialsfont.render(highscores[i][0][1], True, darkgreen) #second initial
+            names_lines[i][2] = initialsfont.render(highscores[i][0][2], True, darkgreen) #third initial
+            screen.blit(names_lines[i][0], (1230, 379+(i*40)))
+            screen.blit(names_lines[i][1], (1272, 379+(i*40)))
+            screen.blit(names_lines[i][2], (1315, 379+(i*40)))
+            #this will make sure the score gets blit if it is 3, 2, or 1 digits
+            #the score is saved as it is, not with extra spaces, so something like this is necessary
             try:
-                names_lines[i][0] = initialsfont.render(highscores[i][0][0], True, darkgreen)
-                names_lines[i][1] = initialsfont.render(highscores[i][0][1], True, darkgreen)
-                names_lines[i][2] = initialsfont.render(highscores[i][0][2], True, darkgreen)
                 scores_lines[i] = initialsfont.render(highscores[i][1][0] + "   " + highscores[i][1][1] + "   " + highscores[i][1][2], True, darkgreen)
-                screen.blit(names_lines[i][0], (1230, 379+(i*40)))
-                screen.blit(names_lines[i][1], (1272, 379+(i*40)))
-                screen.blit(names_lines[i][2], (1315, 379+(i*40)))
-                screen.blit(scores_lines[i], (1365, 378+(i*40)))
             except Exception:
                 try:
-                    names_lines[i][0] = initialsfont.render(highscores[i][0][0], True, darkgreen)
-                    names_lines[i][1] = initialsfont.render(highscores[i][0][1], True, darkgreen)
-                    names_lines[i][2] = initialsfont.render(highscores[i][0][2], True, darkgreen)
                     scores_lines[i] = initialsfont.render(highscores[i][1][0] + "   " + highscores[i][1][1], True, darkgreen)
-                    screen.blit(names_lines[i][0], (1230, 379+(i*40)))
-                    screen.blit(names_lines[i][1], (1272, 379+(i*40)))
-                    screen.blit(names_lines[i][2], (1315, 379+(i*40)))
-                    screen.blit(scores_lines[i], (1365, 378+(i*40)))
-                except Exception:
-                    names_lines[i][0] = initialsfont.render(highscores[i][0][0], True, darkgreen)
-                    names_lines[i][1] = initialsfont.render(highscores[i][0][1], True, darkgreen)
-                    names_lines[i][2] = initialsfont.render(highscores[i][0][2], True, darkgreen)                    
+                except Exception:                   
                     scores_lines[i] = initialsfont.render(highscores[i][1][0], True, darkgreen)
-                    screen.blit(names_lines[i][0], (1230, 379+(i*40)))
-                    screen.blit(names_lines[i][1], (1272, 379+(i*40)))
-                    screen.blit(names_lines[i][2], (1315, 379+(i*40)))
-                    screen.blit(scores_lines[i], (1365, 378+(i*40)))
+            screen.blit(scores_lines[i], (1365, 378+(i*40)))
 
         if score <= -9990:
             screen.blit(OVERLAY, OVERLAY.get_rect(center = screen.get_rect().center))
@@ -1128,9 +1123,6 @@ def manage_highscores(file_path):
         for entry in top_scores:
             file.write(f"{entry[0]}: {entry[1]}\n")
 
-game_finished(volume= True, music= True, current_cursor=current_cursor, inventory = [["pies", 20],["bell", 0],["hourglass", 0],["double", 1],["snow", 0]], score=-9990)
-
 intro_sequence()
-
-# For demo purposes, pies is set to 20
+# For demo purposes, values are set
 main_menu(volume= True, music= True, current_cursor=current_cursor, inventory = [["pies", 20],["bell", 5],["hourglass", 5],["double", 5],["snow", 5]])
