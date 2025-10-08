@@ -154,7 +154,7 @@ def main_menu(volume, music, current_cursor, inventory): #the main menu screen
                     sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button.checkForInput(mousePos):
-                    volume, music = tutorial(volume,music, current_cursor, inventory)
+                    volume, music = play(volume,music, current_cursor, inventory) #tutorial(volume,music, current_cursor, inventory)
                 if settings_button.checkForInput(mousePos):
                     volume, music, current_cursor, inventory = settings(volume, music, current_cursor, inventory)
                 if quit_button.checkForInput(mousePos):
@@ -181,12 +181,15 @@ def settings(volume, music, current_cursor, inventory):
                          text_input="Sounds      ", font=settingsfont, base_color=darkbrown, hovering_color=pink)
     music_button = Button(music_on_image, pos=(1400,190),
                          text_input="Music     ", font=settingsfont, base_color=darkbrown, hovering_color=pink)
-    tutorial_button = Button(tutorial_sign_image, pos=(1400,265),
-                         text_input="Tutorial", font=settingsfont, base_color=darkbrown, hovering_color=pink)
+    #tutorial_button = Button(tutorial_sign_image, pos=(1400,265),
+    #                     text_input="Tutorial", font=settingsfont, base_color=darkbrown, hovering_color=pink)
     intro_button = Button(intro_sign_image, pos=(1400,340),
                          text_input="Replay Intro", font=settingsfont, base_color=darkbrown, hovering_color=pink)
     back_button = Button(back_sign_image, pos=(1445,410),
                          text_input="Back", font=settingsfont, base_color=darkbrown, hovering_color=pink)
+
+    tutorial_button = Button(tutorial_sign_image, pos=(1400,265),
+                         text_input="Main Menu", font=settingsfont, base_color=darkbrown, hovering_color=pink)
 
     while True: 
         mousePos = pygame.mouse.get_pos()
@@ -230,7 +233,7 @@ def settings(volume, music, current_cursor, inventory):
                         music_button.image = music_off_image
                         music_channel.pause()
                 if tutorial_button.checkForInput(mousePos):
-                    volume, music, current_cursor, inventory = tutorial(volume,music, current_cursor, inventory)
+                    volume, music, current_cursor, inventory = main_menu(volume,music, current_cursor, inventory) #tutorial(volume,music, current_cursor, inventory)
                     return volume, music, current_cursor, inventory
                 if intro_button.checkForInput(mousePos):
                     intro_sequence()
@@ -526,7 +529,7 @@ def shop(volume,music, current_cursor, inventory):
         
         pygame.display.update()  
 
-def tutorial(volume,music, current_cursor, inventory):
+#def tutorial(volume,music, current_cursor, inventory):
     while True:
         screen.fill(pink)
 
@@ -732,7 +735,7 @@ def play(volume,music, current_cursor, inventory):
                     heart1 = True
                     heart2 = True
                     heart3 = True
-                    secondsRemaining = 20
+                    secondsRemaining = 45
                     score = 0
                     pygame.mouse.set_visible(False)
                     cursor_image = current_cursor
@@ -1124,5 +1127,5 @@ def manage_highscores(file_path):
             file.write(f"{entry[0]}: {entry[1]}\n")
 
 intro_sequence()
-# For demo purposes, values are set
-main_menu(volume= True, music= True, current_cursor=current_cursor, inventory = [["pies", 20],["bell", 5],["hourglass", 5],["double", 5],["snow", 5]])
+# For demo purposes, values may be set
+main_menu(volume= True, music= True, current_cursor=current_cursor, inventory = [["pies", 0],["bell", 0],["hourglass", 0],["double", 0],["snow", 0]])
