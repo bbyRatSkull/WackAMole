@@ -20,12 +20,12 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 # Colors we want to use
+lightbrown = (134, 94, 54)
 darkbrown = (60,40,37)
 pink = (250,110,121)
 white = (255, 255, 255)
 grey = (94, 91, 140)
 black = (0, 0, 0)
-darkblue = (0,0,139)
 lightgreen = (166, 203, 150)
 darkgreen = (0, 101, 84)
 orange = (222, 93, 58)
@@ -38,14 +38,12 @@ playfont = pygame.font.SysFont('pixelsans', 70)
 shopfont = pygame.font.SysFont('pixelsans', 35)
 timerfont = pygame.font.SysFont('vtf misterpixel', 50)
 timerfont_bigger = pygame.font.SysFont('vtf misterpixel', 54)
-initialsfont = pygame.font.SysFont('vtf misterpixel', 34)
+initialsfont = pygame.font.SysFont('vtf misterpixel', 32)
 
 #sound and chennels can be initialized here
 #sounds themselves are defined in the function they wil be used in
 #...this is so they do not play in slow motion :D
 pygame.mixer.init()
-buzzer = pygame.mixer.Sound(resource_path('Resources/Audio/buzzer.wav'))
-
 music_channel = pygame.mixer.Channel(0)
 sfx_channel = pygame.mixer.Channel(1)
 
@@ -246,7 +244,7 @@ def shop(volume,music, current_cursor, inventory):
     settings_button = Button(transform.scale(pygame.image.load("Resources/Sprites/gear.PNG").convert_alpha(),(50,50)), pos=(1458, 118),
                              text_input="", font=buttonfont, base_color=grey, hovering_color=grey)
     back_button = Button(transform.scale(pygame.image.load("Resources/Sprites/back_arrow.PNG").convert_alpha(),(68,68)), pos=(54, 118),
-                             text_input="", font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input="", font=buttonfont, base_color=black, hovering_color=white)
     next_button = Button(transform.scale(pygame.image.load("Resources/Sprites/next_arrow.PNG").convert_alpha(),(50,50)), pos=(944,438),
                          text_input="", font=shopfont, base_color=darkbrown, hovering_color=pink)
     yes_button = Button(transform.scale(pygame.image.load("Resources/Sprites/yes.PNG").convert_alpha(),(50,50)), pos=(944,438),
@@ -257,30 +255,30 @@ def shop(volume,music, current_cursor, inventory):
     speech_bubble = pygame.image.load("Resources/Sprites/speech_bubble.PNG").convert_alpha()
         
     snow_power = Button(pygame.image.load("Resources/Sprites/snow_shop.PNG").convert_alpha(), pos=(587, 549), 
-                             text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     double_power = Button(pygame.image.load("Resources/Sprites/double_shop.PNG").convert_alpha(), pos=(359, 490), 
-                             text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     hourglass_power = Button(pygame.image.load("Resources/Sprites/hourglass_shop.PNG").convert_alpha(), pos=(442, 524), 
-                             text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     bell_power = Button(pygame.image.load("Resources/Sprites/bell_shop.PNG").convert_alpha(), pos=(467, 433), 
-                             text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=white)
         
     red_paint = Button(pygame.image.load("Resources/Sprites/red_paint.PNG").convert_alpha(), pos=(1078, 490), 
-                             text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     orange_paint = Button(pygame.image.load("Resources/Sprites/orange_paint.PNG").convert_alpha(), pos=(1110, 551), 
-                             text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     green_paint = Button(pygame.image.load("Resources/Sprites/green_paint.PNG").convert_alpha(), pos=(1078, 308), 
-                             text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     teal_paint = Button(pygame.image.load("Resources/Sprites/teal_paint.PNG").convert_alpha(), pos=(1158, 368), 
-                             text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     blue_paint = Button(pygame.image.load("Resources/Sprites/blue_paint.PNG").convert_alpha(), pos=(1158, 490), 
-                             text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     purple_paint = Button(pygame.image.load("Resources/Sprites/purple_paint.PNG").convert_alpha(), pos=(1110, 368), 
-                             text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     pink_paint = Button(pygame.image.load("Resources/Sprites/pink_paint.PNG").convert_alpha(), pos=(1195, 551), 
-                             text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     black_paint = Button(pygame.image.load("Resources/Sprites/black_paint.PNG").convert_alpha(), pos=(1195, 430), 
-                             text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     
     red_hammer = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor_red.PNG").convert_alpha(), (320,180))
     orange_hammer = transform.scale(pygame.image.load("Resources/Sprites/hammer_cursor_orange.PNG").convert_alpha(), (320,180))
@@ -374,7 +372,7 @@ def shop(volume,music, current_cursor, inventory):
                     item_clicked = True
                     dialogue = False
                     line1_text = "It's like I'm"
-                    line2_text = "seeing double."
+                    line2_text = "seeing double!"
                     line3_text = "I'll trade you"
                     line4_text = "four pies?"
                     current_power = "double"
@@ -528,7 +526,7 @@ def shop(volume,music, current_cursor, inventory):
 
 def tutorial(volume,music, current_cursor, inventory):
     while True:
-        screen.fill(darkblue)
+        screen.fill(pink)
 
         tutorial_text = buttonfont.render("Let's learn how to play!", True, black)
         tutorial_rect = tutorial_text.get_rect(center=(640, 100))
@@ -539,9 +537,9 @@ def tutorial(volume,music, current_cursor, inventory):
         mousey = mousePos[1]
 
         menu_button = Button(None, pos=(1000, 650), 
-                             text_input="Main Menu", font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input="Main Menu", font=buttonfont, base_color=black, hovering_color=white)
         skip_tutorial_button = Button(None, pos=(100, 650), 
-                             text_input="Skip Tutorial", font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input="Skip Tutorial", font=buttonfont, base_color=black, hovering_color=white)
         
         for button in [menu_button, skip_tutorial_button]:
             button.changeColor(mousePos)
@@ -581,7 +579,7 @@ def play(volume,music, current_cursor, inventory):
         moles[i].status = 'absent'
         
     back_button = Button(transform.scale(pygame.image.load("Resources/Sprites/back_arrow.PNG").convert_alpha(),(68,68)), pos=(54, 118),
-                             text_input="", font=buttonfont, base_color=black, hovering_color=orange)
+                             text_input="", font=buttonfont, base_color=black, hovering_color=white)
     shop_button = Button(None, pos=(890, 850), 
                          text_input="Shop", font=playfont, base_color=darkbrown, hovering_color=pink)
     start_button = Button(None, pos=(610, 850), 
@@ -592,13 +590,13 @@ def play(volume,music, current_cursor, inventory):
                          text_input="", font=buttonfont, base_color=grey, hovering_color=grey)
     
     snow_power = Button(transform.scale(pygame.image.load("Resources/Sprites/snow.PNG").convert_alpha(),(96,96)), pos=(970, 860), 
-                         text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                         text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     double_power = Button(transform.scale(pygame.image.load("Resources/Sprites/double.PNG").convert_alpha(),(96,96)), pos=(830, 860), 
-                         text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                         text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     bell_power = Button(transform.scale(pygame.image.load("Resources/Sprites/bell.PNG").convert_alpha(),(96,96)), pos=(550, 860), 
-                         text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                         text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     hourglass_power = Button(transform.scale(pygame.image.load("Resources/Sprites/hourglass.PNG").convert_alpha(),(96,96)), pos=(690, 860), 
-                         text_input=None, font=buttonfont, base_color=black, hovering_color=orange)
+                         text_input=None, font=buttonfont, base_color=black, hovering_color=white)
     
     heart_full = transform.scale(image.load(resource_path("Resources/Sprites/heart_full.PNG")).convert_alpha(), (50, 50))
     heart_empty = transform.scale(image.load(resource_path("Resources/Sprites/heart_empty.PNG")).convert_alpha(), (50, 50))
@@ -607,6 +605,8 @@ def play(volume,music, current_cursor, inventory):
     #sfx and music
     bonk = pygame.mixer.Sound(resource_path('Resources/Audio/bonk.mp3'))
     gameover = pygame.mixer.Sound(resource_path('Resources/Audio/gameover.mp3'))
+    buzzer = pygame.mixer.Sound(resource_path('Resources/Audio/buzzer.mp3'))
+    buzzer.set_volume(.40)
     power_up = pygame.mixer.Sound(resource_path('Resources/Audio/power_up.mp3'))
     power_up.set_volume(0.55)
     bell = pygame.mixer.Sound(resource_path('Resources/Audio/bell.mp3'))
@@ -728,7 +728,7 @@ def play(volume,music, current_cursor, inventory):
                     heart1 = True
                     heart2 = True
                     heart3 = True
-                    secondsRemaining = 5
+                    secondsRemaining = 20
                     score = 0
                     pygame.mouse.set_visible(False)
                     cursor_image = current_cursor
@@ -779,7 +779,11 @@ def play(volume,music, current_cursor, inventory):
                                 moles[i].status = 'dead'
                                 if doubling is True:
                                     score += 1
+                                    if hardmode is True:
+                                        score += 1
                                 score += 1
+                                if hardmode is True:
+                                    score += 1
                                 if aliveodds == 1:
                                     aliveodds = 10
                                     absentodds = 3
@@ -805,6 +809,10 @@ def play(volume,music, current_cursor, inventory):
                                     pygame.mouse.set_cursor(pygame.cursors.Cursor())
                                     
                                 if doubling is True:
+                                    if hardmode is True:
+                                        score -= 1
+                                    score -= 1
+                                if hardmode is True:
                                     score -= 1
                                 score -= 1
                             else:
@@ -812,6 +820,10 @@ def play(volume,music, current_cursor, inventory):
                                 if volume is True:
                                     sfx_channel.play(buzzer)
                                 if doubling is True:
+                                    if hardmode is True:
+                                        score -= 1
+                                    score -= 1
+                                if hardmode is True:
                                     score -= 1
                                 score -= 1
             
@@ -888,7 +900,7 @@ def play(volume,music, current_cursor, inventory):
                     button.enabled = True
                 for button in [bell_power, hourglass_power, double_power, snow_power]:
                     button.enabled = False
-                screen.blit(mode_text, (802, 872))
+                screen.blit(mode_text, (803, 872))
 
                 if gameCompleted:
                     if volume is True:
@@ -903,14 +915,13 @@ def play(volume,music, current_cursor, inventory):
 def game_finished(volume, music, current_cursor, inventory, score):
     current_input = ""
     asking = False
+    did_ask = False
     
     pie_image = transform.scale(pygame.image.load("Resources/Sprites/pie.PNG").convert_alpha(), (125,125))
     pie_positions = [(55, 430), (180, 430), (305, 430), (430, 430), (55, 266), (180, 266), (305, 266), (430, 266)]
-    pies_earned = score // 4
+    pies_earned = score // 8
     if score > 0:
         inventory[0][1] += pies_earned
-    if pies_earned > 0:
-        asking = True
 
     kitchen_music = pygame.mixer.Sound(resource_path('Resources/Audio/kitchen_music.mp3'))
     kitchen_music.set_volume(0.9)
@@ -924,14 +935,11 @@ def game_finished(volume, music, current_cursor, inventory, score):
     BG = transform.scale(pygame.image.load("Resources/Backgrounds/BG_Final.PNG").convert(),GAME_SIZE)
     OVERLAY = transform.scale(pygame.image.load("Resources/Backgrounds/overlay.PNG").convert_alpha(),GAME_SIZE)
 
-    menu_button = Button(None, pos=(100, 118), 
-                 text_input="Main Menu", font=buttonfont, base_color=white, hovering_color=white)
-    continue_button = Button(None, pos=(700, 650), 
-                 text_input="Continue", font=buttonfont, base_color=black, hovering_color=orange)
+    continue_button = Button(transform.scale(pygame.image.load("Resources/Sprites/back_arrow.PNG").convert_alpha(),(68,68)), pos=(64, 118), 
+                 text_input="", font=buttonfont, base_color=black, hovering_color=white)
     
     line1_text = ""
     line2_text = ""
-    line3_text = ""
 
     #gets the user's home directory. works on macOS, Linux, Windows
     home_dir = os.path.expanduser("~")
@@ -942,7 +950,7 @@ def game_finished(volume, music, current_cursor, inventory, score):
     #defined the path to the txt file
     file_path = os.path.join(folder_path, "highscores.txt")
 
-    highscores = [x for x in range(5)]
+    highscores = [x for x in range(4)]
     try: #will work if the file exists/ has been written in
         with open(file_path, "r") as file:
             x = -1
@@ -954,7 +962,7 @@ def game_finished(volume, music, current_cursor, inventory, score):
     except Exception: #will run if the file has not been written in yet
         #this writes in 0 scores for all 5 possible highscores. Will overwrite data in the file
         with open(file_path, "w") as file:
-            for i in range(5):
+            for i in range(4):
                 file.write("000: 000\n")
         #same code as above, will correctly run this time
         with open(file_path, "r") as file:
@@ -964,21 +972,24 @@ def game_finished(volume, music, current_cursor, inventory, score):
                 (name, round_score) = line.strip().split(": ")
                 highscores[x] = (name, round_score)
 
+    if pies_earned > 0 and pies_earned > int(highscores[3][1]):
+        asking = True
+        did_ask = True
+
     while True:
         mousePos = pygame.mouse.get_pos()
-
         screen.blit(BG, BG.get_rect(center = screen.get_rect().center))
 
-        prompt = shopfont.render("Enter your initials:", True, darkbrown, lightgreen)
-        input_box = shopfont.render(current_input, True, darkblue)
-
+        if did_ask:
+            text4 = settingsfont.render("Wow, you got a top score!", True, darkgreen, lightgreen)
+            screen.blit(text4, (640, 496))
         if asking:
-            screen.blit(prompt, (930, 498))
-            screen.blit(input_box, (978, 530))
+            prompt = settingsfont.render(" Enter your initials: ", True, darkgreen, lightgreen)
+            input_box = settingsfont.render(current_input, True, darkgreen, lightgreen)
+            screen.blit(prompt, (925, 496))
+            screen.blit(input_box, (1145, 496))
 
-        for button in [menu_button, continue_button]:
-            button.changeColor(mousePos)
-            button.update(screen)
+        continue_button.update(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -992,10 +1003,6 @@ def game_finished(volume, music, current_cursor, inventory, score):
                     return
             
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if menu_button.checkForInput(mousePos):
-                    if music is True:
-                        music_channel.play(base_music)
-                    main_menu(volume, music, current_cursor, inventory)
                 if continue_button.checkForInput(mousePos):
                     if music is True:
                         music_channel.play(base_music)
@@ -1006,6 +1013,12 @@ def game_finished(volume, music, current_cursor, inventory, score):
             if event.type == pygame.KEYDOWN and asking:
                 #if enter is clicked, save name and score
                 if event.key == pygame.K_RETURN:
+                    if len(current_input) == 2:
+                        current_input += " "
+                    elif len(current_input) == 1:
+                        current_input += "  "
+                    else:
+                        current_input += "---" 
                     with open(file_path, "a") as file:
                         file.write(f"{current_input}: {int(pies_earned)}\n")
                     print(f"Saved: {current_input} - {int(pies_earned)}")
@@ -1033,62 +1046,69 @@ def game_finished(volume, music, current_cursor, inventory, score):
                 screen.blit(pie_image, pie_positions[i])
 
             if pies_earned > 8:
-                line1_text = "Good job! You collected enough"
-                line2_text = "jam to make " + str(pies_earned) + " pies."
-                line3_text = "You even ran out of room with that many!"
+                line1_text = "Good job! You collected enough jam to make " + str(pies_earned) + " pies."
+                line2_text = "You even ran out of room with that many!"
+            else:
+                line1_text = "Good job! You collected enough jam to make " + str(pies_earned) + " pies."
+                line2_text = "Mmm. Smells yummy!"
 
         elif score > -9990:
             #better luck next time
             line1_text = "Awe, looks like you couldn't get enough jam for a pie."
             line2_text = "Better luck next time."
         else:
-            screen.blit(OVERLAY, OVERLAY.get_rect(center = screen.get_rect().center))
             #bad ending, hit rabbits to get here
             line1_text = "Oh no! Poor snowdrop!"
             line2_text = "Be more careful not to hit her next time."
         
-        text = buttonfont.render(line1_text, True, darkbrown)
-        screen.blit(text, (350,50))
-        text2 = buttonfont.render(line2_text, True, darkbrown)
-        screen.blit(text2, (350,100))
-        text3 = buttonfont.render(line3_text, True, darkbrown)
-        screen.blit(text3, (350,150))
+        text = settingsfont.render(line1_text, True, darkbrown, lightbrown)
+        screen.blit(text, (650,130))
+        text2 = settingsfont.render(line2_text, True, darkbrown, lightbrown)
+        screen.blit(text2, (658,165))
         text4 = shopfont.render("Most Pies Baked", True, grey)
         screen.blit(text4, (1240, 315))
-        names_lines = [["","",""] for x in range(5)]
-        scores_lines = [0 for x in range(5)]
+        names_lines = [["","",""] for x in range(4)]
+        scores_lines = [0 for x in range(4)]
         #currently does work for one two or three digits of score, will not do the same for initials. 
         #maybe hard lock in the initials in the above bit where theire typing it
-        for i in range(5):
+        for i in range(4):
+            screen.blit(initialsfont.render(":", True, darkgreen), (1355, 378+(i*40)))
             try:
                 names_lines[i][0] = initialsfont.render(highscores[i][0][0], True, darkgreen)
                 names_lines[i][1] = initialsfont.render(highscores[i][0][1], True, darkgreen)
                 names_lines[i][2] = initialsfont.render(highscores[i][0][2], True, darkgreen)
                 scores_lines[i] = initialsfont.render(highscores[i][1][0] + "   " + highscores[i][1][1] + "   " + highscores[i][1][2], True, darkgreen)
-                screen.blit(names_lines[i][0], (1230, 377+(i*40)))
-                screen.blit(names_lines[i][1], (1272, 377+(i*40)))
-                screen.blit(names_lines[i][2], (1315, 377+(i*40)))
-                screen.blit(scores_lines[i], (1360, 375+(i*40)))
+                screen.blit(names_lines[i][0], (1230, 379+(i*40)))
+                screen.blit(names_lines[i][1], (1272, 379+(i*40)))
+                screen.blit(names_lines[i][2], (1315, 379+(i*40)))
+                screen.blit(scores_lines[i], (1365, 378+(i*40)))
             except Exception:
                 try:
                     names_lines[i][0] = initialsfont.render(highscores[i][0][0], True, darkgreen)
                     names_lines[i][1] = initialsfont.render(highscores[i][0][1], True, darkgreen)
                     names_lines[i][2] = initialsfont.render(highscores[i][0][2], True, darkgreen)
                     scores_lines[i] = initialsfont.render(highscores[i][1][0] + "   " + highscores[i][1][1], True, darkgreen)
-                    screen.blit(names_lines[i][0], (1230, 377+(i*40)))
-                    screen.blit(names_lines[i][1], (1272, 377+(i*40)))
-                    screen.blit(names_lines[i][2], (1315, 377+(i*40)))
-                    screen.blit(scores_lines[i], (1360, 375+(i*40)))
+                    screen.blit(names_lines[i][0], (1230, 379+(i*40)))
+                    screen.blit(names_lines[i][1], (1272, 379+(i*40)))
+                    screen.blit(names_lines[i][2], (1315, 379+(i*40)))
+                    screen.blit(scores_lines[i], (1365, 378+(i*40)))
                 except Exception:
                     names_lines[i][0] = initialsfont.render(highscores[i][0][0], True, darkgreen)
                     names_lines[i][1] = initialsfont.render(highscores[i][0][1], True, darkgreen)
                     names_lines[i][2] = initialsfont.render(highscores[i][0][2], True, darkgreen)                    
                     scores_lines[i] = initialsfont.render(highscores[i][1][0], True, darkgreen)
-                    screen.blit(names_lines[i][0], (1230, 377+(i*40)))
-                    screen.blit(names_lines[i][1], (1272, 377+(i*40)))
-                    screen.blit(names_lines[i][2], (1315, 377+(i*40)))
-                    screen.blit(scores_lines[i], (1360, 375+(i*40)))
+                    screen.blit(names_lines[i][0], (1230, 379+(i*40)))
+                    screen.blit(names_lines[i][1], (1272, 379+(i*40)))
+                    screen.blit(names_lines[i][2], (1315, 379+(i*40)))
+                    screen.blit(scores_lines[i], (1365, 378+(i*40)))
 
+        if score <= -9990:
+            screen.blit(OVERLAY, OVERLAY.get_rect(center = screen.get_rect().center))
+            text = settingsfont.render(line1_text, True, black)
+            screen.blit(text, (650,130))
+            text2 = settingsfont.render(line2_text, True, black)
+            screen.blit(text2, (658,165))
+            continue_button.update(screen)
         pygame.display.update()
 
 def manage_highscores(file_path):
@@ -1101,14 +1121,14 @@ def manage_highscores(file_path):
             score = int(entry[1])
             highscores.append((name, score))
 
-    top_scores = sorted(highscores, key=lambda x: x[1], reverse=True)[:5]
+    top_scores = sorted(highscores, key=lambda x: x[1], reverse=True)[:4]
 
-    #rewrite top 5 to file
+    #rewrite top 4 to file
     with open(file_path, "w") as file:
         for entry in top_scores:
             file.write(f"{entry[0]}: {entry[1]}\n")
 
-#game_finished(volume= True, music= True, current_cursor=current_cursor, inventory = [["pies", 20],["bell", 0],["hourglass", 0],["double", 1],["snow", 0]], score=46)
+game_finished(volume= True, music= True, current_cursor=current_cursor, inventory = [["pies", 20],["bell", 0],["hourglass", 0],["double", 1],["snow", 0]], score=-9990)
 
 intro_sequence()
 
